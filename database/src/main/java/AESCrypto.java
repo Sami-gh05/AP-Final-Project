@@ -6,7 +6,7 @@ import java.util.Base64;
 
 public class AESCrypto implements CryptoService {
 
-    private SecretKey secretKey;
+    private final SecretKey secretKey;
 
     public AESCrypto() {
         try {
