@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class User {
+public class User implements Account{
     private String userName;
     private String password;
     //The structure of following Map collections is keys as product type and value as the ordered number
@@ -12,6 +12,16 @@ public class User {
         this.password = password;
         previousPurchases = new HashMap<>();
         shoppingCard = new HashMap<>();
+    }
+
+    @Override
+    public void SignIn(String userName, String pass) {
+        Authentication.signUpOrSignIn.userLogIn(userName, pass);
+    }
+
+    @Override
+    public void signUp(String userName, String pass) {
+        Authentication.signUpOrSignIn.userRegister(userName, pass);
     }
 
     public String getUserName() {
