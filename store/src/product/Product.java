@@ -3,6 +3,7 @@ public abstract class Product {
     private String title;
     private float price;
     private int rate, ratersNum;
+    protected String label;
 
     public Product(String title, float price){
         this.title = title;

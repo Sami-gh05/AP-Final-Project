@@ -10,6 +10,7 @@ public class Cloth extends Product{
         this.sex = sex;
         super.productCode += "C" + String.valueOf(adder); //because it is cloth
         adder++;
+        super.label = "Cloth";
     }
 
     public String getSex() {
