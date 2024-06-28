@@ -1,13 +1,16 @@
+package account;
 public class Admin {
-    private String adminID = "Administrator";
-    private String adminPass = "StoreKeeper";
+    private static String adminID = "Administrator", adminPass = "StoreKeeper";
+    private static String message;
     private boolean loginStatus;
+    private static float storeBalance = 0;
+
 
     public void setAdminPass(String presentPass, String newPass) {
         if(presentPass.equals(this.getAdminPass()))
-            this.adminPass = adminPass;
+            adminPass = newPass;
         else
-            System.out.println("ACCESS DENIED");
+            setMessage("WRONG PASSWORD");
     }
 
     public String getAdminPass() {
@@ -25,4 +28,15 @@ public class Admin {
         return adminID;
     }
 
+    public static void storeBalanceIncrease(float amount){
+        storeBalance += amount;
+    }
+
+    public static void setMessage(String message) {
+        Admin.message = message;
+    }
+
+    public static String getMessage() {
+        return message;
+    }
 }
