@@ -1,20 +1,24 @@
 package database.java;
-import product.Product;
-import product.Cloth;
-import product.Phone;
 
 import account.User;
 
+import product.Cloth;
+import product.Phone;
+import product.Product;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
-public class UsersDatabaseManager implements DatabaseManager<User> {
+public class UsersDatabaseManager implements DatabaseManager<User>{
     private final String url = "jdbc:mysql://mysql-1a7e2ea6-joeroc-a519.d.aivencloud.com:10588/mamad";
     private final String user = "avnadmin";
     private final String password = "AVNS_qfvxNvrWtAOxfVSC9f3";
+    CryptoService cryptoService;
+
+    public UsersDatabaseManager(){
+        cryptoService = new AESCrypto();
+    }
 
     @Override
     public void writeToDatabase(List<User> users) {
@@ -32,7 +36,7 @@ public class UsersDatabaseManager implements DatabaseManager<User> {
             stmt.executeUpdate("ALTER TABLE Users AUTO_INCREMENT = 1");
 
             // Insert Users and Products
-            String insertUserSQL = "INSERT INTO Users (userName, password) VALUES (?, ?)";
+            String insertUserSQL = "INSERT INTO Users (userName, password, name, phoneNumber, address) VALUES (?, ?, ?, ?, ?)";
             String insertClothSQL = "INSERT INTO %s (name, price, size, color, sex, user_id, amount) VALUES (?, ?, ?, ?, ?, ?, ?)";
             String insertPhoneSQL = "INSERT INTO %s (name, price, companyName, model, color, user_id, amount) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
@@ -45,7 +49,10 @@ public class UsersDatabaseManager implements DatabaseManager<User> {
             for (User user : users) {
                 // Insert User
                 pstmtUser.setString(1, user.getUserName());
-                pstmtUser.setString(2, user.getPassword());
+                pstmtUser.setString(2, cryptoService.encrypt(user.getPassword()));
+                pstmtUser.setString(3, user.getName()); // Assuming User class has getName() method
+                pstmtUser.setString(4, user.getPhoneNumber()); // Assuming User class has getPhoneNumber() method
+                pstmtUser.setString(5, user.getAddress()); // Assuming User class has getAddress() method
                 pstmtUser.executeUpdate();
                 ResultSet rsUser = pstmtUser.getGeneratedKeys();
                 rsUser.next();
@@ -109,8 +116,12 @@ public class UsersDatabaseManager implements DatabaseManager<User> {
                 int userId = rsUsers.getInt("id");
                 String userName = rsUsers.getString("userName");
                 String password = rsUsers.getString("password");
+                String name = rsUsers.getString("name"); // Assuming User class has setName() method
+                String phoneNumber = rsUsers.getString("phoneNumber"); // Assuming User class has setPhoneNumber() method
+                String address = rsUsers.getString("address"); // Assuming User class has setAddress() method
+                password = cryptoService.decrypt(password);
 
-                User user = new User(userName, password);
+                User user = new User(userName, password, name, phoneNumber, address);
 
                 // Read Products for each User
                 readProductsForUser(userId, user, connection);
@@ -166,7 +177,10 @@ public class UsersDatabaseManager implements DatabaseManager<User> {
         String createUserTableSQL = "CREATE TABLE IF NOT EXISTS Users (" +
                 "id INT AUTO_INCREMENT PRIMARY KEY, " +
                 "userName VARCHAR(255) NOT NULL, " +
-                "password VARCHAR(255) NOT NULL)";
+                "password VARCHAR(255) NOT NULL, " +
+                "name VARCHAR(255), " +
+                "phoneNumber VARCHAR(255), " +
+                "address VARCHAR(255))";
         String createClothTableSQL = "CREATE TABLE IF NOT EXISTS %s (" +
                 "id INT AUTO_INCREMENT PRIMARY KEY, " +
                 "name VARCHAR(255) NOT NULL, " +
@@ -199,4 +213,3 @@ public class UsersDatabaseManager implements DatabaseManager<User> {
         return rs.next();
     }
 }
-
