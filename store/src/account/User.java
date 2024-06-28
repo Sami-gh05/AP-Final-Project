@@ -5,13 +5,16 @@ import product.Product;
 
 import java.util.*;
 
-public class User implements Account{
-    private String userName;
-    private String password;
-    //The structure of following Map collections is keys as product type and value as the ordered number
+import java.util.*;
+
+public class User {
+    private String userName, password; //these two fields are initialized when signing up
+    private String name, phoneNumber, address; //these three fields will be initialized and edited in ProfilePanel after signing upfiel
+    private float balance;
+    //The structure of following Map collections is keys as product type and value as the number of orders
     private Map<Product, Integer> previousPurchases;
     private Map<Product, Integer> shoppingCard;
-    private boolean isLoggedIn;
+    private boolean loginStatus;
     public User(String userName, String password){
         this.userName = userName;
         this.password = password;
@@ -19,15 +22,6 @@ public class User implements Account{
         shoppingCard = new HashMap<>();
     }
 
-    @Override
-    public void SignIn(String userName, String pass) {
-        Authentication.signUpOrSignIn.userLogIn(userName, pass);
-    }
-
-    @Override
-    public void signUp(String userName, String pass) {
-        Authentication.signUpOrSignIn.userRegister(userName, pass);
-    }
 
     public String getUserName() {
         return userName;
@@ -41,7 +35,7 @@ public class User implements Account{
     }
 
     public String getPassword() {
-        if(this.isLoggedIn)
+        if(loginStatus)
             return password;
         else
             return "ACCESS DENIED";
@@ -56,39 +50,39 @@ public class User implements Account{
 
     public Map<Product, Integer> getShoppingCard() {
 
-<<<<<<< HEAD
         return shoppingCard;
-=======
-            return shoppingCard;
->>>>>>> a91ea4c812760cf222c3e7f05a9c4853ddaae8ef
 
     }
 
     public Map<Product, Integer> getPreviousPurchases() {
 
-<<<<<<< HEAD
         return previousPurchases;
-=======
-            return previousPurchases;
->>>>>>> a91ea4c812760cf222c3e7f05a9c4853ddaae8ef
 
     }
 
+    public void setLoginStatus(boolean looginStatus) {
+        this.loginStatus = looginStatus;
+    }
+    public boolean getLoginStatus(){
+        return loginStatus;
+    }
+
+    public float getBalance() {
+        return balance;
+    }
+    public void balanceIncrease(float amount){
+        this.balance += amount;
+    }
+    public void balanceDecrease(float amount){
+        this.balance -= amount;
+    }
     //adding a product into shopping card:
     public void addTOShoppingCard(Product product, int amount){
-<<<<<<< HEAD
         this.shoppingCard.put(product, amount);
     }
     //adding a product into previous purchases:
     public void addToPreviousPurchases(Product product,int amount){
         this.previousPurchases.put(product, amount);
-=======
-       this.shoppingCard.put(product, amount);
-    }
-    //adding a product into previous purchases:
-    public void addToPreviousPurchases(Product product,int amount){
-       this.previousPurchases.put(product, amount);
->>>>>>> a91ea4c812760cf222c3e7f05a9c4853ddaae8ef
     }
     //removing a product from shopping card:
     public void removeFromShoppingCard(){
