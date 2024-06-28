@@ -1,21 +1,36 @@
+package shop;
+
+import account.Admin;
+import account.User;
+import database.java.DatabaseManager;
+import database.java.ProductsDatabaseManager;
+import database.java.UsersDatabaseManager;
+import product.Product;
+
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
 public class Data {
-    protected static Set<User> users;
+    protected static List<User> users;
     protected static Admin admin;
-    protected Set<Product> products;
-    public Data(){
-        users = new HashSet<>();
-        admin = new Admin();
-        products = new HashSet<>();
+    protected static List<Product> products;
+    private static UsersDatabaseManager  usersDatabaseManager = new UsersDatabaseManager();
+    private static ProductsDatabaseManager productsDatabaseManager = new ProductsDatabaseManager();
+
+
+    public static void fillData(){
+         users = usersDatabaseManager.readFromDatabase();
+         products = productsDatabaseManager.readFromDatabase();
     }
-    public void updateUser(User user){
-        //TODO
-    }
-    public  void updateProducts(Product product){
-        //TODO
+
+    public static void fillDatabase(){
+
+        usersDatabaseManager.writeToDatabase(users);
+        productsDatabaseManager.writeToDatabase(products);
+
     }
 
 }
