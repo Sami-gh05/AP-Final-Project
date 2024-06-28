@@ -1,9 +1,11 @@
+package product;
+
 public class Cloth extends Product{
     private String size;
     private String color;
     private String sex;
     private int adder = 1;
-    public Cloth(String title, float price, String size, String color, String sex){
+    public Cloth(String title, double price, String size, String color, String sex){
         super(title, price);
         this.size = size;
         this.color = color;

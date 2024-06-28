@@ -56,23 +56,39 @@ public class User implements Account{
 
     public Map<Product, Integer> getShoppingCard() {
 
+<<<<<<< HEAD
         return shoppingCard;
+=======
+            return shoppingCard;
+>>>>>>> a91ea4c812760cf222c3e7f05a9c4853ddaae8ef
 
     }
 
     public Map<Product, Integer> getPreviousPurchases() {
 
+<<<<<<< HEAD
         return previousPurchases;
+=======
+            return previousPurchases;
+>>>>>>> a91ea4c812760cf222c3e7f05a9c4853ddaae8ef
 
     }
 
     //adding a product into shopping card:
     public void addTOShoppingCard(Product product, int amount){
+<<<<<<< HEAD
         this.shoppingCard.put(product, amount);
     }
     //adding a product into previous purchases:
     public void addToPreviousPurchases(Product product,int amount){
         this.previousPurchases.put(product, amount);
+=======
+       this.shoppingCard.put(product, amount);
+    }
+    //adding a product into previous purchases:
+    public void addToPreviousPurchases(Product product,int amount){
+       this.previousPurchases.put(product, amount);
+>>>>>>> a91ea4c812760cf222c3e7f05a9c4853ddaae8ef
     }
     //removing a product from shopping card:
     public void removeFromShoppingCard(){

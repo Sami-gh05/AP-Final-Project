@@ -1,9 +1,11 @@
+package product;
+
 public class Phone extends Product{
     private String companyName;
     private String model;
     private String color;
     private int adder = 1;
-    public Phone(String title, float price, String companyName, String model, String color){
+    public Phone(String title, double price, String companyName, String model, String color){
         super(title, price);
         this.companyName = companyName;
         this.color = color;

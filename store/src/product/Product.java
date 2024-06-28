@@ -1,11 +1,13 @@
+package product;
+
 public abstract class Product {
     protected String productCode;
     private String title;
-    private float price;
+    private double price;
     private int rate, ratersNum;
     protected String label;
 
-    public Product(String title, float price){
+    public Product(String title, double price){
         this.title = title;
         this.price = price;
         this.rate = 1;
@@ -17,7 +19,7 @@ public abstract class Product {
     public void setTitle(String title){ // if the user has access as the admin
         this.title = title;
     }
-    public float getPrice(){
+    public double getPrice(){
         return this.price;
     }
     public void setPrice(float price){ // if the user has access as the admin
