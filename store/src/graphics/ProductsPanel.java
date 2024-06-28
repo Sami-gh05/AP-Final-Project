@@ -1,131 +1,105 @@
 package graphics;
 
-import javafx.application.Application;
-import javafx.geometry.Insets;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
-import javafx.stage.Stage;
+import javax.swing.*;
+import java.awt.*;
 
-public class ProductsPanel extends Application {
+public class ProductsPanel extends JFrame {
 
-    private BorderPane root;
+    private JPanel root;
 
-    @Override
-    public void start(Stage primaryStage) {
-        BorderPane root = new BorderPane();
+    public ProductsPanel() {
+        root = new JPanel(new BorderLayout());
 
         // Header
-        HBox header = createHeader();
-        root.setTop(header);
+        JPanel header = createHeader();
+        root.add(header, BorderLayout.NORTH);
 
         // Product Grid
-        GridPane productGrid = createProductGrid();
-        root.setCenter(productGrid);
+        JPanel productGrid = createProductGrid();
+        root.add(productGrid, BorderLayout.CENTER);
 
         // Filters
-        VBox filters = createFilters();
-        root.setRight(filters);
+        JPanel filters = createFilters();
+        root.add(filters, BorderLayout.EAST);
 
-        Scene scene = new Scene(root, 1200, 800);
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("Online Shop");
-        primaryStage.show();
+        this.add(root);
+        this.setTitle("Online Shop");
+        this.setSize(1200, 800);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setVisible(true);
     }
 
-    private HBox createHeader() {
-        HBox header = new HBox(10);
-        header.setPadding(new Insets(10));
+    private JPanel createHeader() {
+        JPanel header = new JPanel();
+        header.setLayout(new BoxLayout(header, BoxLayout.X_AXIS));
 
-        Button userPanelButton = new Button("User Panel");
-        ImageView logo = new ImageView(new Image(getClass().getResource("/Logo.png").toExternalForm()));
-        logo.setFitHeight(50);
-        logo.setFitWidth(50);
-        logo.setPreserveRatio(true);
-        logo.setSmooth(true);
-        logo.setCache(true);
+        JButton userPanelButton = new JButton("User Panel");
+        userPanelButton.addActionListener(e -> {
+            // TODO: Implement the logic to show the user panel
+        });
 
-        Button cartButton = new Button("Cart");
+        JButton cartButton = new JButton("Cart");
 
-        header.getChildren().addAll(logo, userPanelButton, cartButton);
+        header.add(userPanelButton);
+        header.add(cartButton);
         return header;
     }
 
-    private GridPane createProductGrid() {
-        GridPane grid = new GridPane();
-        grid.setPadding(new Insets(10));
-        grid.setHgap(10);
-        grid.setVgap(10);
+    private JPanel createProductGrid() {
+        JPanel grid = new JPanel(new GridLayout(3, 3));
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                VBox productBox = createProductBox();
-                grid.add(productBox, j, i);
+                JPanel productBox = createProductBox();
+                grid.add(productBox);
             }
         }
 
         return grid;
     }
 
-    private VBox createProductBox() {
-        VBox box = new VBox(5);
-        box.setPadding(new Insets(10));
-        box.setStyle("-fx-border-color: gray; -fx-border-width: 1;");
+    private JPanel createProductBox() {
+        JPanel box = new JPanel();
+        box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
 
-        ImageView productImage = new ImageView(new Image("file:product.png"));
-        Label productName = new Label("Product Name");
-        productName.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
-        Label productPrice = new Label("$1000");
-        productPrice.setStyle("-fx-text-fill: green;");
-        Label productRating = new Label("★★★★★");
-        productRating.setStyle("-fx-text-fill: gold;");
+        JLabel productName = new JLabel("Product Name");
+        JLabel productPrice = new JLabel("$1000");
+        JLabel productRating = new JLabel("★★★★★");
 
-        box.getChildren().addAll(productImage, productName, productPrice, productRating);
+        box.add(productName);
+        box.add(productPrice);
+        box.add(productRating);
         return box;
     }
 
-    private VBox createFilters() {
-        VBox filters = new VBox(10);
-        filters.setPadding(new Insets(10));
-        filters.setStyle("-fx-border-color: gray; -fx-border-width: 1;");
+    private JPanel createFilters() {
+        JPanel filters = new JPanel();
+        filters.setLayout(new BoxLayout(filters, BoxLayout.Y_AXIS));
 
-        Label categoryLabel = new Label("Category");
-        categoryLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
-        ComboBox<String> categoryComboBox = new ComboBox<>();
-        categoryComboBox.getItems().addAll("Car", "Phone", "Laptop");
+        JLabel categoryLabel = new JLabel("Category");
+        JComboBox<String> categoryComboBox = new JComboBox<>();
+        categoryComboBox.addItem("Car");
+        categoryComboBox.addItem("Phone");
+        categoryComboBox.addItem("Laptop");
 
-        Label priceLabel = new Label("Price");
-        priceLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
-        Slider priceSlider = new Slider(0, 2000, 1000);
+        JLabel priceLabel = new JLabel("Price");
+        JSlider priceSlider = new JSlider(0, 2000, 1000);
 
-        CheckBox availableGoodsCheckBox = new CheckBox("Only available goods");
+        JCheckBox availableGoodsCheckBox = new JCheckBox("Only available goods");
 
-        filters.getChildren().addAll(categoryLabel, categoryComboBox, priceLabel, priceSlider, availableGoodsCheckBox);
+        filters.add(categoryLabel);
+        filters.add(categoryComboBox);
+        filters.add(priceLabel);
+        filters.add(priceSlider);
+        filters.add(availableGoodsCheckBox);
         return filters;
     }
 
     public static void main(String[] args) {
-        launch(args);
+        new ProductsPanel();
     }
 
-    public Parent getRoot() {
-        BorderPane root = new BorderPane();
-
-        // Header
-        HBox header = createHeader();
-        root.setTop(header);
-
-        // Product Grid
-        GridPane productGrid = createProductGrid();
-        root.setCenter(productGrid);
-
-        // Filters
-        VBox filters = createFilters();
-        root.setRight(filters);
-
+    public JPanel getRoot() {
         return root;
     }
 }
