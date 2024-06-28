@@ -1,6 +1,6 @@
 package account;
 
-import authentication.Authentication;
+import authentication.PhoneNumberValidator;
 import product.Product;
 
 import java.util.*;
@@ -72,9 +72,17 @@ public class User {
             System.out.println("ACCESS DENIED");
     }
 
+    public String getName() {
+        return name;
+    }
 
+    public String getAddress() {
+        return address;
+    }
 
-
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
 
     public Map<Product, Integer> getShoppingCard() {
 
@@ -87,6 +95,7 @@ public class User {
         return previousPurchases;
 
     }
+
 
     public void setLoginStatus(boolean loginStatus) {
         this.loginStatus = loginStatus;
@@ -119,6 +128,15 @@ public class User {
     //removing a product from previous purchases:
     public void removeFromPreviousPurchases(){
         //TODO
+    }
+
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
 
