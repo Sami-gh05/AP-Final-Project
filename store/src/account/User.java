@@ -1,3 +1,8 @@
+package account;
+
+import authentication.Authentication;
+import product.Product;
+
 import java.util.*;
 
 public class User implements Account{
@@ -50,26 +55,24 @@ public class User implements Account{
     }
 
     public Map<Product, Integer> getShoppingCard() {
-        if(this.isLoggedIn)
-            return shoppingCard;
-        else
-            return null;
+
+        return shoppingCard;
+
     }
 
     public Map<Product, Integer> getPreviousPurchases() {
-        if(isLoggedIn)
-            return previousPurchases;
-        else
-            return null;
+
+        return previousPurchases;
+
     }
 
     //adding a product into shopping card:
-    public void addTOShoppingCard(){
-        //TODO
+    public void addTOShoppingCard(Product product, int amount){
+        this.shoppingCard.put(product, amount);
     }
     //adding a product into previous purchases:
-    public void addToPreviousPurchases(){
-        //TODO
+    public void addToPreviousPurchases(Product product,int amount){
+        this.previousPurchases.put(product, amount);
     }
     //removing a product from shopping card:
     public void removeFromShoppingCard(){
