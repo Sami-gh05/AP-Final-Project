@@ -5,8 +5,6 @@ import product.Product;
 
 import java.util.*;
 
-import java.util.*;
-
 public class User {
     private String userName, password; //these two fields are initialized when signing up
     private String name, phoneNumber, address; //these three fields will be initialized and edited in ProfilePanel after signing upfiel
@@ -15,9 +13,13 @@ public class User {
     private Map<Product, Integer> previousPurchases;
     private Map<Product, Integer> shoppingCard;
     private boolean loginStatus;
-    public User(String userName, String password){
+    public User(String userName, String password, String name, String phoneNumber, String address){
         this.userName = userName;
         this.password = password;
+        this.name = name;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+
         previousPurchases = new HashMap<>();
         shoppingCard = new HashMap<>();
     }
@@ -27,7 +29,7 @@ public class User {
         return userName;
     }
 
-    public void setUserName(String password,String userName) {
+    public void changeUserName(String password, String userName) {
         if(this.password.equals(password))
             this.userName = userName;
         else
@@ -41,12 +43,38 @@ public class User {
             return "ACCESS DENIED";
     }
 
-    public void setPassword(String presentPass, String newPass) {
+    public void changePassword(String presentPass, String newPass) {
         if(this.password.equals(presentPass))
             this.password = newPass;
         else
             System.out.println("ACCESS DENIED");
     }
+    public void changeName(String name) {
+        if(loginStatus)
+            this.name = name;
+        else
+            System.out.println("ACCESS DENIED");
+    }
+    public void changeAddress(String address) {
+        if(loginStatus)
+            this.address = address;
+        else
+            System.out.println("ACCESS DENIED");
+    }
+    public void ChangePhoneNumber(String phoneNumber) {
+        if(loginStatus){
+            if(PhoneNumberValidator.validation(phoneNumber))
+                this.phoneNumber = phoneNumber;
+            else
+                System.out.println("Invalid phone Number");
+        }
+        else
+            System.out.println("ACCESS DENIED");
+    }
+
+
+
+
 
     public Map<Product, Integer> getShoppingCard() {
 
@@ -60,8 +88,8 @@ public class User {
 
     }
 
-    public void setLoginStatus(boolean looginStatus) {
-        this.loginStatus = looginStatus;
+    public void setLoginStatus(boolean loginStatus) {
+        this.loginStatus = loginStatus;
     }
     public boolean getLoginStatus(){
         return loginStatus;
