@@ -11,24 +11,27 @@ public class MainGUI {
     private UserMainPanel userMainPanel;
 
     public MainGUI() {
-        frame = new JFrame("Store Application");
-        mainPanel = new JPanel();
+        //frame = new JFrame("Store Application");
+        //mainPanel = new JPanel();
         Data.fillData();
        //TODO
 
 
         SwingUtilities.invokeLater(() -> {
-            SignUp_SignIn frame = new SignUp_SignIn();
-            frame.setTitle("Sign Up/Sign In");
-            frame.setSize(500, 500);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setVisible(true);
+            signUpSignIn = new SignUp_SignIn();
+            signUpSignIn.setTitle("Sign Up/Sign In");
+            signUpSignIn.setSize(500, 500);
+            signUpSignIn.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            signUpSignIn.setLocationRelativeTo(null);
+            signUpSignIn.setVisible(true);
         });
 
         //signUpSignIn = new SignUp_SignIn();
-        mainPanel.add(signUpSignIn.getPanel());
-
-        frame.setVisible(true);
+        //mainPanel.add(signUpSignIn.getPanel());
+        //frame.setVisible(true);
+    }
+    public static void main(String[] args){
+        MainGUI main = new MainGUI();
     }
 
 
