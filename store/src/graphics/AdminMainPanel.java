@@ -1,3 +1,4 @@
+
 package graphics;
 
 import javax.swing.*;
@@ -24,3 +25,5 @@ public class AdminMainPanel extends ProductsPanel{
         return header;
     }
 }
+
+
