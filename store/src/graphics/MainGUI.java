@@ -16,10 +16,22 @@ public class MainGUI {
         Data.fillData();
        //TODO
 
-        signUpSignIn = new SignUp_SignIn();
+
+        SwingUtilities.invokeLater(() -> {
+            SignUp_SignIn frame = new SignUp_SignIn();
+            frame.setTitle("Sign Up/Sign In");
+            frame.setSize(500, 500);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setVisible(true);
+        });
+
+        //signUpSignIn = new SignUp_SignIn();
         mainPanel.add(signUpSignIn.getPanel());
 
         frame.setVisible(true);
+    }
+    public static void main(String[] args){
+        MainGUI main = new MainGUI();
     }
 
 
