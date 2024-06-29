@@ -13,9 +13,10 @@ public class UserProfilePanel extends JPanel {
     private JLabel usernameLabel;
     private JLabel addressLabel;
     private JLabel phoneNumberLabel;
+    private JLabel pastPassLabel, newPassLabel;
 
     private JTextField nameField;
-    private JTextField usernameField;
+    private JTextField usernameField, newPassField, pastPassField;
     private JTextField addressField;
     private JTextField phoneNumberField;
 
@@ -32,8 +33,12 @@ public class UserProfilePanel extends JPanel {
         usernameLabel = new JLabel("Username:");
         addressLabel = new JLabel("Address:");
         phoneNumberLabel = new JLabel("Phone Number:");
+        pastPassLabel = new JLabel("Past password:");
+        newPassLabel = new JLabel("New password:");
 
         nameField = new JTextField(user.getName());
+        newPassField = new JTextField(user.getName());
+        pastPassField = new JTextField(user.getName());
         usernameField = new JTextField(user.getUserName());
         addressField = new JTextField(user.getAddress());
         phoneNumberField = new JTextField(user.getPhoneNumber());
@@ -51,19 +56,28 @@ public class UserProfilePanel extends JPanel {
         add(addressField);
         add(phoneNumberLabel);
         add(phoneNumberField);
+        add(pastPassLabel);
+        add(pastPassField);
+        add(newPassLabel);
+        add(newPassField);
         add(editButton);
         add(increaseBalanceButton);
+
 
         editButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                user.setName(nameField.getText());
-                user.setAddress(addressField.getText());
-                user.setPhoneNumber(phoneNumberField.getText());
+                user.changeName(nameField.getText());
+                user.changeAddress(addressField.getText());
+                user.changePhoneNumber(phoneNumberField.getText());
+                user.changePassword(pastPassField.getText(), newPassField.getText());
+                user.changeUserName(pastPassField.getText(), usernameField.getText());
 
             }
         });
+
+        
 
 
 
