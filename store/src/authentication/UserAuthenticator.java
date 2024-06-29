@@ -51,6 +51,14 @@ public class UserAuthenticator extends Data implements Authenticator{
         return false;
     }
 
+    public User getUser(String userName){
+        if(isUser(userName)){
+            return selectedUser;
+        }
+        else
+            return null;
+    }
+
     public void setMessage(String message){
         this.message = message;
     }
