@@ -32,5 +32,6 @@ public class Data {
         productsDatabaseManager.writeToDatabase(products);
 
     }
+    public static List<User> getUsers(){return users;}
 
 }
