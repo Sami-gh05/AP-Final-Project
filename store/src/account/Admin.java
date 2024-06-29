@@ -2,29 +2,29 @@ package account;
 public class Admin {
     private static String adminID = "Administrator", adminPass = "StoreKeeper";
     private static String message;
-    private boolean loginStatus;
+    private static boolean loginStatus;
     private static float storeBalance = 0;
 
 
-    public void setAdminPass(String presentPass, String newPass) {
-        if(presentPass.equals(this.getAdminPass()))
+    public static void setAdminPass(String presentPass, String newPass) {
+        if(presentPass.equals(getAdminPass()))
             adminPass = newPass;
         else
             setMessage("WRONG PASSWORD");
     }
 
-    public String getAdminPass() {
+    public static String getAdminPass() {
         return adminPass;
     }
 
-    public void setLoginStatus(boolean loginStatus) {
-        this.loginStatus = loginStatus;
+    public  static void setLoginStatus(boolean Status) {
+        loginStatus = Status;
     }
-    public boolean getLoginStatus(){
+    public  static boolean getLoginStatus(){
         return loginStatus;
     }
 
-    public String getAdminID() {
+    public static String getAdminID() {
         return adminID;
     }
 
