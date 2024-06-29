@@ -17,6 +17,8 @@ public class AdminAuthenticator extends Data implements Authenticator {
             admin.setLoginStatus(true);
             setMessage("LOGGED IN SUCCESSFULLY");
         }
+        else
+            setMessage("INCORRECT INPUTS");
 
     }
 
