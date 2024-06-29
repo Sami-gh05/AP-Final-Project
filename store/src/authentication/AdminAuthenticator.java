@@ -1,5 +1,6 @@
 package authentication;
 
+import account.Admin;
 import account.User;
 import shop.Data;
 
@@ -13,8 +14,8 @@ public class AdminAuthenticator extends Data implements Authenticator {
     }
     @Override
     public void signIn(String userName, String pass) {
-        if(admin.getAdminPass().equals(pass) && userName.equals(admin.getAdminID())){
-            admin.setLoginStatus(true);
+        if(Admin.getAdminPass().equals(pass) && userName.equals(Admin.getAdminID())){
+            Admin.setLoginStatus(true);
             setMessage("LOGGED IN SUCCESSFULLY");
         }
         else
@@ -24,7 +25,7 @@ public class AdminAuthenticator extends Data implements Authenticator {
 
     @Override
     public void logOut(String userName) {
-        admin.setLoginStatus(false);
+        Admin.setLoginStatus(false);
         setMessage("LOGGED OUT SUCCESSFULLY");
     }
 
