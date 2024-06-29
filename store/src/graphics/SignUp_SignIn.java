@@ -69,6 +69,15 @@ public class SignUp_SignIn extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
         setVisible(true);
+
+
+        //making the panel
+        this.setTitle("Sign Up/Sign In");
+        this.setSize(500, 500);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setLocationRelativeTo(null);
+        this.setResizable(false);
+        this.setVisible(true);
     }
 
     private void showInitialFields() {
