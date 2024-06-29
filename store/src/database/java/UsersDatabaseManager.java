@@ -1,27 +1,29 @@
 package database.java;
 
-import account.User;
-
 import product.Cloth;
 import product.Phone;
+import account.User;
 import product.Product;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class UsersDatabaseManager implements DatabaseManager<User>{
+public class UsersDatabaseManager implements DatabaseManager<User> {
     private final String url = "jdbc:mysql://mysql-1a7e2ea6-joeroc-a519.d.aivencloud.com:10588/mamad";
     private final String user = "avnadmin";
     private final String password = "AVNS_qfvxNvrWtAOxfVSC9f3";
-    CryptoService cryptoService;
 
+    CryptoService cryptoService;
     public UsersDatabaseManager(){
-        try {
-            cryptoService = new SimpleEncryption(3);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        cryptoService = new SimpleEncryption(3);
     }
 
     @Override
@@ -31,77 +33,38 @@ public class UsersDatabaseManager implements DatabaseManager<User>{
             // Check if tables exist and create them if they don't
             createTablesIfNotExist(stmt);
 
-            // Clear existing data and reset auto-increment
-            stmt.executeUpdate("DELETE FROM previousPurchasesClothes");
-            stmt.executeUpdate("DELETE FROM previousPurchasesPhones");
-            stmt.executeUpdate("DELETE FROM shoppingCardClothes");
-            stmt.executeUpdate("DELETE FROM shoppingCardPhones");
-            stmt.executeUpdate("DELETE FROM Users");
-            stmt.executeUpdate("ALTER TABLE Users AUTO_INCREMENT = 1");
+            // Clear existing data
+            clearExistingData(stmt);
 
             // Insert Users and Products
-            String insertUserSQL = "INSERT INTO Users (userName, password, name, phoneNumber, address) VALUES (?, ?, ?, ?, ?)";
-            String insertClothSQL = "INSERT INTO %s (name, price, size, color, sex, user_id, amount) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            String insertPhoneSQL = "INSERT INTO %s (name, price, companyName, model, color, user_id, amount) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String insertUserSQL = "INSERT INTO Users (userName, password, name, address, phoneNumber) VALUES (?, ?, ?, ?, ?)";
 
             PreparedStatement pstmtUser = connection.prepareStatement(insertUserSQL, Statement.RETURN_GENERATED_KEYS);
-            PreparedStatement pstmtClothPrev = connection.prepareStatement(String.format(insertClothSQL, "previousPurchasesClothes"));
-            PreparedStatement pstmtPhonePrev = connection.prepareStatement(String.format(insertPhoneSQL, "previousPurchasesPhones"));
-            PreparedStatement pstmtClothCard = connection.prepareStatement(String.format(insertClothSQL, "shoppingCardClothes"));
-            PreparedStatement pstmtPhoneCard = connection.prepareStatement(String.format(insertPhoneSQL, "shoppingCardPhones"));
 
             for (User user : users) {
                 // Insert User
                 pstmtUser.setString(1, user.getUserName());
                 pstmtUser.setString(2, cryptoService.encrypt(user.getPassword()));
-                pstmtUser.setString(3, user.getName()); // Assuming User class has getName() method
-                pstmtUser.setString(4, user.getPhoneNumber()); // Assuming User class has getPhoneNumber() method
-                pstmtUser.setString(5, user.getAddress()); // Assuming User class has getAddress() method
+                pstmtUser.setString(3, user.getName());
+                pstmtUser.setString(4, user.getAddress());
+                pstmtUser.setString(5, user.getPhoneNumber());
                 pstmtUser.executeUpdate();
                 ResultSet rsUser = pstmtUser.getGeneratedKeys();
                 rsUser.next();
                 int userId = rsUser.getInt(1);
 
                 // Insert Products from previousPurchases
-                insertProducts(userId, user.getPreviousPurchases(), pstmtClothPrev, pstmtPhonePrev);
+                insertPhones(userId, user.getPreviousPurchases(), "PhonePreviousPurchases", connection);
+                insertClothes(userId, user.getPreviousPurchases(), "ClothPreviousPurchases", connection);
 
                 // Insert Products from shoppingCard
-                insertProducts(userId, user.getShoppingCard(), pstmtClothCard, pstmtPhoneCard);
+                insertPhones(userId, user.getShoppingCard(), "PhoneShoppingCart", connection);
+                insertClothes(userId, user.getShoppingCard(), "ClothShoppingCart", connection);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private void insertProducts(int userId, Map<Product, Integer> productsMap,
-                                PreparedStatement pstmtCloth, PreparedStatement pstmtPhone) throws SQLException {
-        for (Map.Entry<Product, Integer> entry : productsMap.entrySet()) {
-            Product product = entry.getKey();
-            int amount = entry.getValue();
-
-            if (product instanceof Cloth) {
-                Cloth cloth = (Cloth) product;
-                pstmtCloth.setString(1, cloth.getTitle());
-                pstmtCloth.setDouble(2, cloth.getPrice());
-                pstmtCloth.setString(3, cloth.getSize());
-                pstmtCloth.setString(4, cloth.getColor());
-                pstmtCloth.setString(5, cloth.getSex());
-                pstmtCloth.setInt(6, userId);  // Foreign key to Users table
-                pstmtCloth.setInt(7, amount);  // Number of products
-                pstmtCloth.executeUpdate();
-            } else if (product instanceof Phone) {
-                Phone phone = (Phone) product;
-                pstmtPhone.setString(1, phone.getTitle());
-                pstmtPhone.setDouble(2, phone.getPrice());
-                pstmtPhone.setString(3, phone.getCompanyName());
-                pstmtPhone.setString(4, phone.getModel());
-                pstmtPhone.setString(5, phone.getColor());
-                pstmtPhone.setInt(6, userId);  // Foreign key to Users table
-                pstmtPhone.setInt(7, amount);  // Number of products
-                pstmtPhone.executeUpdate();
-            }
         }
     }
 
@@ -122,15 +85,18 @@ public class UsersDatabaseManager implements DatabaseManager<User>{
                 int userId = rsUsers.getInt("id");
                 String userName = rsUsers.getString("userName");
                 String password = rsUsers.getString("password");
-                String name = rsUsers.getString("name"); // Assuming User class has setName() method
-                String phoneNumber = rsUsers.getString("phoneNumber"); // Assuming User class has setPhoneNumber() method
-                String address = rsUsers.getString("address"); // Assuming User class has setAddress() method
-                password = cryptoService.decrypt(password);
+                String name = rsUsers.getString("name");
+                String address = rsUsers.getString("address");
+                String phoneNumber = rsUsers.getString("phoneNumber");
 
-                User user = new User(userName, password, name, phoneNumber, address);
+                User user = new User(userName, cryptoService.decrypt(password), name, address, phoneNumber);
 
                 // Read Products for each User
-                readProductsForUser(userId, user, connection);
+                readPhonesForUser(userId, user, "PhonePreviousPurchases", connection);
+                readClothesForUser(userId, user, "ClothPreviousPurchases", connection);
+                readPhonesForUser(userId, user, "PhoneShoppingCart", connection);
+                readClothesForUser(userId, user, "ClothShoppingCart", connection);
+
                 users.add(user);
             }
         } catch (SQLException e) {
@@ -141,42 +107,94 @@ public class UsersDatabaseManager implements DatabaseManager<User>{
         return users;
     }
 
-    private void readProductsForUser(int userId, User user, Connection connection) throws SQLException {
-        readSpecificProductForUser(userId, user, connection, "previousPurchasesClothes", Cloth.class, true);
-        readSpecificProductForUser(userId, user, connection, "previousPurchasesPhones", Phone.class, true);
-        readSpecificProductForUser(userId, user, connection, "shoppingCardClothes", Cloth.class, false);
-        readSpecificProductForUser(userId, user, connection, "shoppingCardPhones", Phone.class, false);
+    private void insertPhones(int userId, Map<Product, Integer> productsMap, String tableName, Connection connection) throws SQLException {
+        String insertPhoneSQL = "INSERT INTO " + tableName + " (name, price, companyName, model, color, image, userId, amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        PreparedStatement pstmtPhone = connection.prepareStatement(insertPhoneSQL);
+        for (Map.Entry<Product, Integer> entry : productsMap.entrySet()) {
+            if (entry.getKey() instanceof Phone) {
+                Phone phone = (Phone) entry.getKey();
+                int amount = entry.getValue();
+
+                pstmtPhone.setString(1, phone.getTitle());
+                pstmtPhone.setDouble(2, phone.getPrice());
+                pstmtPhone.setString(3, phone.getCompanyName());
+                pstmtPhone.setString(4, phone.getModel());
+                pstmtPhone.setString(5, phone.getColor());
+                pstmtPhone.setBytes(6, phone.getImage());
+                pstmtPhone.setInt(7, userId);
+                pstmtPhone.setInt(8, amount);
+                pstmtPhone.executeUpdate();
+            }
+        }
     }
 
-    private <T extends Product> void readSpecificProductForUser(int userId, User user, Connection connection, String tableName, Class<T> productClass, boolean isPrevious) throws SQLException {
-        String selectProductSQL = "SELECT * FROM " + tableName + " WHERE user_id = ?";
-        PreparedStatement pstmtProduct = connection.prepareStatement(selectProductSQL);
-        pstmtProduct.setInt(1, userId);
-        ResultSet rsProducts = pstmtProduct.executeQuery();
-        while (rsProducts.next()) {
-            String productName = rsProducts.getString("name");
-            double productPrice = rsProducts.getDouble("price");
-            int amount = rsProducts.getInt("amount");
-            Product product = null;
+    private void insertClothes(int userId, Map<Product, Integer> productsMap, String tableName, Connection connection) throws SQLException {
+        String insertClothSQL = "INSERT INTO " + tableName + " (name, price, size, color, sex, image, userId, amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        PreparedStatement pstmtCloth = connection.prepareStatement(insertClothSQL);
+        for (Map.Entry<Product, Integer> entry : productsMap.entrySet()) {
+            if (entry.getKey() instanceof Cloth) {
+                Cloth cloth = (Cloth) entry.getKey();
+                int amount = entry.getValue();
 
-            if (productClass.equals(Cloth.class)) {
-                String size = rsProducts.getString("size");
-                String color = rsProducts.getString("color");
-                String sex = rsProducts.getString("sex");
-                product = new Cloth(productName, productPrice, size, color, sex);
-            } else if (productClass.equals(Phone.class)) {
-                String companyName = rsProducts.getString("companyName");
-                String model = rsProducts.getString("model");
-                String color = rsProducts.getString("color");
-                product = new Phone(productName, productPrice, companyName, model, color);
+                pstmtCloth.setString(1, cloth.getTitle());
+                pstmtCloth.setDouble(2, cloth.getPrice());
+                pstmtCloth.setString(3, cloth.getSize());
+                pstmtCloth.setString(4, cloth.getColor());
+                pstmtCloth.setString(5, cloth.getSex());
+                pstmtCloth.setBytes(6, cloth.getImage());
+                pstmtCloth.setInt(7, userId);
+                pstmtCloth.setInt(8, amount);
+                pstmtCloth.executeUpdate();
             }
+        }
+    }
 
-            if (product != null) {
-                if (isPrevious) {
-                    user.addToPreviousPurchases(product, amount);
-                } else {
-                    user.addTOShoppingCard(product, amount);
-                }
+    private void readPhonesForUser(int userId, User user, String tableName, Connection connection) throws SQLException {
+        String selectPhoneSQL = "SELECT * FROM " + tableName + " WHERE userId = ?";
+        PreparedStatement pstmtPhone = connection.prepareStatement(selectPhoneSQL);
+        pstmtPhone.setInt(1, userId);
+        ResultSet rsPhones = pstmtPhone.executeQuery();
+        while (rsPhones.next()) {
+            String name = rsPhones.getString("name");
+            double price = rsPhones.getDouble("price");
+            String companyName = rsPhones.getString("companyName");
+            String model = rsPhones.getString("model");
+            String color = rsPhones.getString("color");
+            byte[] image = rsPhones.getBytes("image");
+            int amount = rsPhones.getInt("amount");
+
+            Phone phone = new Phone(name, (float) price, companyName, model, color);
+            phone.setImage(image);
+
+            if (tableName.equals("PhonePreviousPurchases")) {
+                user.addToPreviousPurchases(phone, amount);
+            } else if (tableName.equals("PhoneShoppingCart")) {
+                user.addTOShoppingCard(phone, amount);
+            }
+        }
+    }
+
+    private void readClothesForUser(int userId, User user, String tableName, Connection connection) throws SQLException {
+        String selectClothSQL = "SELECT * FROM " + tableName + " WHERE userId = ?";
+        PreparedStatement pstmtCloth = connection.prepareStatement(selectClothSQL);
+        pstmtCloth.setInt(1, userId);
+        ResultSet rsClothes = pstmtCloth.executeQuery();
+        while (rsClothes.next()) {
+            String name = rsClothes.getString("name");
+            double price = rsClothes.getDouble("price");
+            String size = rsClothes.getString("size");
+            String color = rsClothes.getString("color");
+            String sex = rsClothes.getString("sex");
+            byte[] image = rsClothes.getBytes("image");
+            int amount = rsClothes.getInt("amount");
+
+            Cloth cloth = new Cloth(name, (float) price, size, color, sex);
+            cloth.setImage(image);
+
+            if (tableName.equals("ClothPreviousPurchases")) {
+                user.addToPreviousPurchases(cloth, amount);
+            } else if (tableName.equals("ClothShoppingCart")) {
+                user.addTOShoppingCard(cloth, amount);
             }
         }
     }
@@ -187,37 +205,90 @@ public class UsersDatabaseManager implements DatabaseManager<User>{
                 "userName VARCHAR(255) NOT NULL, " +
                 "password VARCHAR(255) NOT NULL, " +
                 "name VARCHAR(255), " +
-                "phoneNumber VARCHAR(255), " +
-                "address VARCHAR(255))";
-        String createClothTableSQL = "CREATE TABLE IF NOT EXISTS %s (" +
-                "id INT AUTO_INCREMENT PRIMARY KEY, " +
-                "name VARCHAR(255) NOT NULL, " +
-                "price DOUBLE NOT NULL, " +
-                "size VARCHAR(50), " +
-                "color VARCHAR(50), " +
-                "sex VARCHAR(50), " +
-                "user_id INT, " +
-                "amount INT, " +
-                "FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE)";
-        String createPhoneTableSQL = "CREATE TABLE IF NOT EXISTS %s (" +
+                "address VARCHAR(255), " +
+                "phoneNumber VARCHAR(255))";
+
+        String createPhonePreviousPurchasesTableSQL = "CREATE TABLE IF NOT EXISTS PhonePreviousPurchases (" +
                 "id INT AUTO_INCREMENT PRIMARY KEY, " +
                 "name VARCHAR(255) NOT NULL, " +
                 "price DOUBLE NOT NULL, " +
                 "companyName VARCHAR(255), " +
                 "model VARCHAR(255), " +
                 "color VARCHAR(50), " +
-                "user_id INT, " +
+                "image BLOB, " +
+                "userId INT, " +
                 "amount INT, " +
-                "FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE)";
+                "FOREIGN KEY (userId) REFERENCES Users(id) ON DELETE CASCADE)";
+
+        String createClothPreviousPurchasesTableSQL = "CREATE TABLE IF NOT EXISTS ClothPreviousPurchases (" +
+                "id INT AUTO_INCREMENT PRIMARY KEY, " +
+                "name VARCHAR(255) NOT NULL, " +
+                "price DOUBLE NOT NULL, " +
+                "size VARCHAR(50), " +
+                "color VARCHAR(50), " +
+                "sex VARCHAR(50), " +
+                "image BLOB, " +
+                "userId INT, " +
+                "amount INT, " +
+                "FOREIGN KEY (userId) REFERENCES Users(id) ON DELETE CASCADE)";
+
+        String createPhoneShoppingCartTableSQL = "CREATE TABLE IF NOT EXISTS PhoneShoppingCart (" +
+                "id INT AUTO_INCREMENT PRIMARY KEY, " +
+                "name VARCHAR(255) NOT NULL, " +
+                "price DOUBLE NOT NULL, " +
+                "companyName VARCHAR(255), " +
+                "model VARCHAR(255), " +
+                "color VARCHAR(50), " +
+                "image BLOB, " +
+                "userId INT, " +
+                "amount INT, " +
+                "FOREIGN KEY (userId) REFERENCES Users(id) ON DELETE CASCADE)";
+
+        String createClothShoppingCartTableSQL = "CREATE TABLE IF NOT EXISTS ClothShoppingCart (" +
+                "id INT AUTO_INCREMENT PRIMARY KEY, " +
+                "name VARCHAR(255) NOT NULL, " +
+                "price DOUBLE NOT NULL, " +
+                "size VARCHAR(50), " +
+                "color VARCHAR(50), " +
+                "sex VARCHAR(50), " +
+                "image BLOB, " +
+                "userId INT, " +
+                "amount INT, " +
+                "FOREIGN KEY (userId) REFERENCES Users(id) ON DELETE CASCADE)";
+
         stmt.executeUpdate(createUserTableSQL);
-        stmt.executeUpdate(String.format(createClothTableSQL, "previousPurchasesClothes"));
-        stmt.executeUpdate(String.format(createClothTableSQL, "shoppingCardClothes"));
-        stmt.executeUpdate(String.format(createPhoneTableSQL, "previousPurchasesPhones"));
-        stmt.executeUpdate(String.format(createPhoneTableSQL, "shoppingCardPhones"));
+        stmt.executeUpdate(createPhonePreviousPurchasesTableSQL);
+        stmt.executeUpdate(createClothPreviousPurchasesTableSQL);
+        stmt.executeUpdate(createPhoneShoppingCartTableSQL);
+        stmt.executeUpdate(createClothShoppingCartTableSQL);
     }
 
     private boolean checkIfTablesExist(Statement stmt) throws SQLException {
-        ResultSet rs = stmt.executeQuery("SHOW TABLES LIKE 'Users'");
-        return rs.next();
+        ResultSet rsUsers = stmt.executeQuery("SHOW TABLES LIKE 'Users'");
+        boolean usersExist = rsUsers.next();
+        ResultSet rsPhonePrevPurchases = stmt.executeQuery("SHOW TABLES LIKE 'PhonePreviousPurchases'");
+        boolean phonePrevPurchasesExist = rsPhonePrevPurchases.next();
+        ResultSet rsClothPrevPurchases = stmt.executeQuery("SHOW TABLES LIKE 'ClothPreviousPurchases'");
+        boolean clothPrevPurchasesExist = rsClothPrevPurchases.next();
+        ResultSet rsPhoneShoppingCart = stmt.executeQuery("SHOW TABLES LIKE 'PhoneShoppingCart'");
+        boolean phoneShoppingCartExist = rsPhoneShoppingCart.next();
+        ResultSet rsClothShoppingCart = stmt.executeQuery("SHOW TABLES LIKE 'ClothShoppingCart'");
+        boolean clothShoppingCartExist = rsClothShoppingCart.next();
+        return usersExist && phonePrevPurchasesExist && clothPrevPurchasesExist && phoneShoppingCartExist && clothShoppingCartExist;
     }
+
+    private void clearExistingData(Statement stmt) throws SQLException {
+        stmt.executeUpdate("DELETE FROM PhonePreviousPurchases");
+        stmt.executeUpdate("DELETE FROM ClothPreviousPurchases");
+        stmt.executeUpdate("DELETE FROM PhoneShoppingCart");
+        stmt.executeUpdate("DELETE FROM ClothShoppingCart");
+        stmt.executeUpdate("DELETE FROM Users");
+        stmt.executeUpdate("ALTER TABLE PhonePreviousPurchases AUTO_INCREMENT = 1");
+        stmt.executeUpdate("ALTER TABLE ClothPreviousPurchases AUTO_INCREMENT = 1");
+        stmt.executeUpdate("ALTER TABLE PhoneShoppingCart AUTO_INCREMENT = 1");
+        stmt.executeUpdate("ALTER TABLE ClothShoppingCart AUTO_INCREMENT = 1");
+        stmt.executeUpdate("ALTER TABLE Users AUTO_INCREMENT = 1");
+    }
+
+
 }

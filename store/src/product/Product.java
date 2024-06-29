@@ -1,14 +1,20 @@
 package product;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.Serializable;
 
-public abstract class Product {
+public abstract class Product implements Serializable {
     protected String productCode;
     private String title;
     private double price;
     private int rate, ratersNum;
     protected String label;
-    private ImageIcon image;
+    private byte[] image;
+    private ImageIcon imageIcon;
 
     public Product(String title, double price){
         this.title = title;
@@ -35,11 +41,28 @@ public abstract class Product {
         this.rate = (this.rate * ratersNum) + rate / ++ratersNum;
     }
 
-    public void setImage(ImageIcon image) {
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
         this.image = image;
     }
 
-    public ImageIcon getImage() {
-        return image;
+    public ImageIcon getImageIcon() {
+        if(this.getImage() != null){
+            this.imageIcon = new ImageIcon(byteArrayToImage(getImage()));
+        }
+
+        return imageIcon;
+    }
+
+    private BufferedImage byteArrayToImage(byte[] imageData) {
+        try {
+            return ImageIO.read(new ByteArrayInputStream(imageData));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

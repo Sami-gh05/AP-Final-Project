@@ -1,11 +1,18 @@
 package database.java;
+
 import product.Cloth;
 import product.Phone;
 import product.Product;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.imageio.ImageIO;
 
 public class ProductsDatabaseManager implements DatabaseManager<Product> {
     private final String url = "jdbc:mysql://mysql-1a7e2ea6-joeroc-a519.d.aivencloud.com:10588/mamad";
@@ -21,14 +28,11 @@ public class ProductsDatabaseManager implements DatabaseManager<Product> {
             createTablesIfNotExist(stmt);
 
             // Clear existing data
-            stmt.executeUpdate("DELETE FROM phones");
-            stmt.executeUpdate("DELETE FROM clothes");
-            stmt.executeUpdate("ALTER TABLE phones AUTO_INCREMENT = 1");
-            stmt.executeUpdate("ALTER TABLE clothes AUTO_INCREMENT = 1");
+            clearExistingData(stmt);
 
             // Insert Products
-            String insertPhoneSQL = "INSERT INTO phones (name, price, companyName, model, color) VALUES (?, ?, ?, ?, ?)";
-            String insertClothSQL = "INSERT INTO clothes (name, price, size, color, sex) VALUES (?, ?, ?, ?, ?)";
+            String insertPhoneSQL = "INSERT INTO phones (name, price, companyName, model, color, image) VALUES (?, ?, ?, ?, ?, ?)";
+            String insertClothSQL = "INSERT INTO clothes (name, price, size, color, sex, image) VALUES (?, ?, ?, ?, ?, ?)";
 
             PreparedStatement pstmtPhone = connection.prepareStatement(insertPhoneSQL);
             PreparedStatement pstmtCloth = connection.prepareStatement(insertClothSQL);
@@ -41,6 +45,7 @@ public class ProductsDatabaseManager implements DatabaseManager<Product> {
                     pstmtPhone.setString(3, phone.getCompanyName());
                     pstmtPhone.setString(4, phone.getModel());
                     pstmtPhone.setString(5, phone.getColor());
+                    pstmtPhone.setBytes(6, phone.getImage());
                     pstmtPhone.executeUpdate();
                 } else if (product instanceof Cloth) {
                     Cloth cloth = (Cloth) product;
@@ -49,6 +54,7 @@ public class ProductsDatabaseManager implements DatabaseManager<Product> {
                     pstmtCloth.setString(3, cloth.getSize());
                     pstmtCloth.setString(4, cloth.getColor());
                     pstmtCloth.setString(5, cloth.getSex());
+                    pstmtCloth.setBytes(6, cloth.getImage());
                     pstmtCloth.executeUpdate();
                 }
             }
@@ -56,7 +62,6 @@ public class ProductsDatabaseManager implements DatabaseManager<Product> {
             e.printStackTrace();
         }
     }
-
 
     @Override
     public List<Product> readFromDatabase() {
@@ -77,7 +82,9 @@ public class ProductsDatabaseManager implements DatabaseManager<Product> {
                 String companyName = rsPhones.getString("companyName");
                 String model = rsPhones.getString("model");
                 String color = rsPhones.getString("color");
+                byte[] image = rsPhones.getBytes("image");
                 Phone phone = new Phone(name, (float) price, companyName, model, color);
+                phone.setImage(image);
                 products.add(phone);
             }
 
@@ -90,7 +97,9 @@ public class ProductsDatabaseManager implements DatabaseManager<Product> {
                 String size = rsClothes.getString("size");
                 String color = rsClothes.getString("color");
                 String sex = rsClothes.getString("sex");
+                byte[] image = rsClothes.getBytes("image");
                 Cloth cloth = new Cloth(name, (float) price, size, color, sex);
+                cloth.setImage(image);
                 products.add(cloth);
             }
         } catch (SQLException e) {
@@ -106,14 +115,16 @@ public class ProductsDatabaseManager implements DatabaseManager<Product> {
                 "price DOUBLE NOT NULL, " +
                 "companyName VARCHAR(255), " +
                 "model VARCHAR(255), " +
-                "color VARCHAR(50))";
+                "color VARCHAR(50), " +
+                "image BLOB)";
         String createClothTableSQL = "CREATE TABLE IF NOT EXISTS clothes (" +
                 "id INT AUTO_INCREMENT PRIMARY KEY, " +
                 "name VARCHAR(255) NOT NULL, " +
                 "price DOUBLE NOT NULL, " +
                 "size VARCHAR(50), " +
                 "color VARCHAR(50), " +
-                "sex VARCHAR(50))";
+                "sex VARCHAR(50), " +
+                "image BLOB)";
         stmt.executeUpdate(createPhoneTableSQL);
         stmt.executeUpdate(createClothTableSQL);
     }
@@ -126,7 +137,26 @@ public class ProductsDatabaseManager implements DatabaseManager<Product> {
         return phonesExist && clothesExist;
     }
 
+    private void clearExistingData(Statement stmt) throws SQLException {
+        stmt.executeUpdate("DELETE FROM phones");
+        stmt.executeUpdate("DELETE FROM clothes");
+        stmt.executeUpdate("ALTER TABLE phones AUTO_INCREMENT = 1");
+        stmt.executeUpdate("ALTER TABLE clothes AUTO_INCREMENT = 1");
+    }
 
+    private byte[] imageToByteArray(BufferedImage image) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(image, "jpg", baos);
+        return baos.toByteArray();
+    }
 
-
+    private BufferedImage byteArrayToImage(byte[] imageData) {
+        try {
+            InputStream is = new ByteArrayInputStream(imageData);
+            return ImageIO.read(is);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
