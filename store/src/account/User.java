@@ -61,7 +61,7 @@ public class User {
         else
             System.out.println("ACCESS DENIED");
     }
-    public void ChangePhoneNumber(String phoneNumber) {
+    public void changePhoneNumber(String phoneNumber) {
         if(loginStatus){
             if(PhoneNumberValidator.validation(phoneNumber))
                 this.phoneNumber = phoneNumber;
@@ -131,19 +131,4 @@ public class User {
     }
 
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
 }
