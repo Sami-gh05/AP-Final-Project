@@ -16,7 +16,7 @@ public class UserProfilePanel extends JPanel {
     private JLabel pastPassLabel, newPassLabel;
 
     private JTextField nameField;
-    private JTextField usernameField, newPassField, pastPassField;
+    private JTextField usernameField, presentPassField, pastPassField;
     private JTextField addressField;
     private JTextField phoneNumberField;
 
@@ -27,7 +27,7 @@ public class UserProfilePanel extends JPanel {
     public UserProfilePanel(User user) {
         this.user = user;
 
-        setLayout(new GridLayout(5, 2));
+        setLayout(new GridLayout(6, 2));
 
         nameLabel = new JLabel("Name:");
         usernameLabel = new JLabel("Username:");
@@ -37,8 +37,8 @@ public class UserProfilePanel extends JPanel {
         newPassLabel = new JLabel("New password:");
 
         nameField = new JTextField(user.getName());
-        newPassField = new JTextField(user.getName());
-        pastPassField = new JTextField(user.getName());
+        presentPassField = new JTextField(user.getPassword());
+        pastPassField = new JTextField();
         usernameField = new JTextField(user.getUserName());
         addressField = new JTextField(user.getAddress());
         phoneNumberField = new JTextField(user.getPhoneNumber());
@@ -59,7 +59,7 @@ public class UserProfilePanel extends JPanel {
         add(pastPassLabel);
         add(pastPassField);
         add(newPassLabel);
-        add(newPassField);
+        add(presentPassField);
         add(editButton);
         add(increaseBalanceButton);
 
@@ -71,13 +71,11 @@ public class UserProfilePanel extends JPanel {
                 user.changeName(nameField.getText());
                 user.changeAddress(addressField.getText());
                 user.changePhoneNumber(phoneNumberField.getText());
-                user.changePassword(pastPassField.getText(), newPassField.getText());
+                user.changePassword(pastPassField.getText(), presentPassField.getText());
                 user.changeUserName(pastPassField.getText(), usernameField.getText());
 
             }
         });
-
-        
 
 
 
