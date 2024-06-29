@@ -86,7 +86,7 @@ public class ProductsEditPanel implements ActionListener {
         exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                adminMainPanel.setVisible(true); // Show admin main panel
+                adminMainPanel.add(adminMainPanel.createHeader()); // Show admin main panel
                 adminMainPanel.revalidate();
                 adminMainPanel.repaint();
             }
