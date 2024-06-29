@@ -153,7 +153,7 @@ public class SignUp_SignIn extends JFrame {
             try{
                 //it checks whether the user exists or not
                 userAuthentication.signIn(  usernameField.getText(),
-                        passwordField.getText());
+                                            passwordField.getText());
             }
             catch (Exception exception){
                 userAuthentication.setMessage("PLEASE FILL ALL THE GAPS CORRECTLY");
@@ -162,7 +162,7 @@ public class SignUp_SignIn extends JFrame {
             if(userAuthentication.getMessage().equals("LOGGED IN SUCCESSFULLY")){
                 usernameField.setText("");
                 passwordField.setText("");
-                new ProductsPanel();
+                new UserMainPanel(userAuthentication.getUser(usernameField.getText()));
                 this.dispose();
             }
         });
@@ -212,7 +212,7 @@ public class SignUp_SignIn extends JFrame {
         loginButton2.addActionListener(e -> {
             try{
                 adminAuthentication.signIn(  usernameField.getText(),
-                                        passwordField.getText());
+                                            passwordField.getText());
             }
             catch (Exception exception){
                 adminAuthentication.setMessage("PLEASE FILL ALL THE GAPS CORRECTLY");
@@ -221,7 +221,7 @@ public class SignUp_SignIn extends JFrame {
             if(adminAuthentication.getMessage().equals("LOGGED IN SUCCESSFULLY")){
                 usernameField.setText("");
                 passwordField.setText("");
-                new ProductsPanel();
+                new AdminMainPanel();
                 this.dispose();
             }
         });
@@ -302,7 +302,7 @@ public class SignUp_SignIn extends JFrame {
                 nameField.setText("");
                 phoneField.setText("");
                 addressField.setText("");
-                new ProductsPanel();
+                new UserMainPanel(authentication.getUser(usernameField.getText()));
                 this.dispose();
             }
         });

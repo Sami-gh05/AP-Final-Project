@@ -11,22 +11,15 @@ public class MainGUI {
 
 
     public MainGUI() {
-        //frame = new JFrame("Store Application");
+        frame = new JFrame("Store Application");
         //mainPanel = new JPanel();
         Data.fillData();
        //TODO
 
 
-        SwingUtilities.invokeLater(() -> {
-            signUpSignIn = new SignUp_SignIn();
-            signUpSignIn.setTitle("Sign Up/Sign In");
-            signUpSignIn.setSize(500, 500);
-            signUpSignIn.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            signUpSignIn.setLocationRelativeTo(null);
-            signUpSignIn.setVisible(true);
-        });
 
-        //signUpSignIn = new SignUp_SignIn();
+
+        signUpSignIn = new SignUp_SignIn();
         //mainPanel.add(signUpSignIn.getPanel());
         //frame.setVisible(true);
     }
