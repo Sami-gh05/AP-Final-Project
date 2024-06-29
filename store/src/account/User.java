@@ -130,5 +130,12 @@ public class User {
         //TODO
     }
 
+    public void setShoppingCard(Map<Product, Integer> shoppingCard) {
+        this.shoppingCard = shoppingCard;
+    }
+
+    public void setPreviousPurchases(Map<Product, Integer> previousPurchases) {
+        this.previousPurchases = previousPurchases;
+    }
 
 }

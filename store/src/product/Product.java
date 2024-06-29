@@ -1,6 +1,9 @@
 package product;
 
 import javax.swing.*;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
 
 public abstract class Product {
     protected String productCode;
@@ -8,7 +11,8 @@ public abstract class Product {
     private double price;
     private int rate, ratersNum;
     protected String label;
-    private ImageIcon image;
+    private ImageIcon imageIcon;
+    private byte[] image;
 
     public Product(String title, double price){
         this.title = title;
@@ -35,11 +39,27 @@ public abstract class Product {
         this.rate = (this.rate * ratersNum) + rate / ++ratersNum;
     }
 
-    public void setImage(ImageIcon image) {
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
         this.image = image;
     }
 
-    public ImageIcon getImage() {
-        return image;
+    public ImageIcon getImageIcon() {
+
+        this.imageIcon = new ImageIcon(byteArrayToImage(this.image));
+        return imageIcon;
+    }
+
+    private BufferedImage byteArrayToImage(byte[] imageData) {
+        try {
+            InputStream is = new ByteArrayInputStream(imageData);
+            return ImageIO.read(is);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
