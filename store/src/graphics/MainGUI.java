@@ -1,5 +1,6 @@
 package graphics;
 import account.User;
+import shop.Data;
 
 import javax.swing.*;
 
@@ -12,9 +13,10 @@ public class MainGUI {
     public MainGUI() {
         frame = new JFrame("Store Application");
         mainPanel = new JPanel();
+        Data.fillData();
        //TODO
 
-        signUpSignIn = new SignUp_SignIn(this);
+        signUpSignIn = new SignUp_SignIn();
         mainPanel.add(signUpSignIn.getPanel());
 
         frame.setVisible(true);
