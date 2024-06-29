@@ -3,9 +3,9 @@ package graphics;
 import javax.swing.*;
 import java.awt.*;
 
-public class ProductsPanel extends JFrame {
+public abstract class ProductsPanel extends JFrame {
 
-    private JPanel root;
+    protected JPanel root;
 
     public ProductsPanel() {
         root = new JPanel(new BorderLayout());
@@ -26,24 +26,12 @@ public class ProductsPanel extends JFrame {
         this.setTitle("Online Shop");
         this.setSize(1200, 800);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setLocationRelativeTo(null);
+        this.setResizable(false);
         this.setVisible(true);
     }
 
-    private JPanel createHeader() {
-        JPanel header = new JPanel();
-        header.setLayout(new BoxLayout(header, BoxLayout.X_AXIS));
-
-        JButton userPanelButton = new JButton("User Panel");
-        userPanelButton.addActionListener(e -> {
-            // TODO: Implement the logic to show the user panel
-        });
-
-        JButton cartButton = new JButton("Cart");
-
-        header.add(userPanelButton);
-        header.add(cartButton);
-        return header;
-    }
+    public abstract JPanel createHeader();
 
     private JPanel createProductGrid() {
         JPanel grid = new JPanel(new GridLayout(3, 3));
@@ -95,9 +83,9 @@ public class ProductsPanel extends JFrame {
         return filters;
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         new ProductsPanel();
-    }
+    }*/
 
     public JPanel getRoot() {
         return root;
