@@ -33,4 +33,8 @@ public class Data {
 
     }
 
+    public static List<User> getUsers(){return users;}
+    public static List<Product> getProducts(){return products;}
+
+
 }
