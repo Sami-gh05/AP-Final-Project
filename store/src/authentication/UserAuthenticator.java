@@ -3,6 +3,7 @@ package authentication;
 import shop.Data;
 import account.User;
 
+
 public class UserAuthenticator extends Data implements Authenticator{
     private User selectedUser;
     private String message;

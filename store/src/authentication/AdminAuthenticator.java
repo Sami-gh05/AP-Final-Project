@@ -2,6 +2,7 @@ package authentication;
 
 import shop.Data;
 
+
 public abstract class AdminAuthenticator extends Data implements Authenticator {
     private String message;
 
