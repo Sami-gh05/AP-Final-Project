@@ -20,6 +20,11 @@ public class UsersDatabaseManager implements DatabaseManager<User> {
     private final String url = "jdbc:mysql://mysql-1a7e2ea6-joeroc-a519.d.aivencloud.com:10588/mamad";
     private final String user = "avnadmin";
     private final String password = "AVNS_qfvxNvrWtAOxfVSC9f3";
+    CryptoService cryptoService;
+
+    public UsersDatabaseManager(){
+        cryptoService = new SimpleEncryption(3);
+    }
 
     @Override
     public void writeToDatabase(List<User> users) {
@@ -39,7 +44,7 @@ public class UsersDatabaseManager implements DatabaseManager<User> {
             for (User user : users) {
                 // Insert User
                 pstmtUser.setString(1, user.getUserName());
-                pstmtUser.setString(2, user.getPassword());
+                pstmtUser.setString(2, cryptoService.encrypt(user.getPassword()));
                 pstmtUser.setString(3, user.getName());
                 pstmtUser.setString(4, user.getAddress());
                 pstmtUser.setString(5, user.getPhoneNumber());
@@ -58,6 +63,8 @@ public class UsersDatabaseManager implements DatabaseManager<User> {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -82,7 +89,7 @@ public class UsersDatabaseManager implements DatabaseManager<User> {
                 String address = rsUsers.getString("address");
                 String phoneNumber = rsUsers.getString("phoneNumber");
 
-                User user = new User(userName, password, name, address, phoneNumber);
+                User user = new User(userName, cryptoService.decrypt(password), name, address, phoneNumber);
 
                 // Read Products for each User
                 readPhonesForUser(userId, user, "PhonePreviousPurchases", connection);
@@ -94,6 +101,8 @@ public class UsersDatabaseManager implements DatabaseManager<User> {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
         return users;
     }
