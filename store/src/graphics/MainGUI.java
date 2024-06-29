@@ -8,7 +8,7 @@ public class MainGUI {
     private JFrame frame;
     private JPanel mainPanel;
     private SignUp_SignIn signUpSignIn;
-    private UserMainPanel userMainPanel;
+
 
     public MainGUI() {
         //frame = new JFrame("Store Application");
@@ -38,13 +38,6 @@ public class MainGUI {
 
 
 
-    public void showUserMainGUI(User user) {
-        mainPanel.removeAll();
-       userMainPanel = new UserMainPanel(this,user);
-        mainPanel.add(userMainPanel.getPanel());
-        frame.revalidate();
-        frame.repaint();
-    }
 
     public void refreshFrame() {
         frame.revalidate();
