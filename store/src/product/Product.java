@@ -1,11 +1,14 @@
 package product;
 
+import javax.swing.*;
+
 public abstract class Product {
     protected String productCode;
     private String title;
     private double price;
     private int rate, ratersNum;
     protected String label;
+    private ImageIcon image;
 
     public Product(String title, double price){
         this.title = title;
@@ -32,4 +35,11 @@ public abstract class Product {
         this.rate = (this.rate * ratersNum) + rate / ++ratersNum;
     }
 
+    public void setImage(ImageIcon image) {
+        this.image = image;
+    }
+
+    public ImageIcon getImage() {
+        return image;
+    }
 }
