@@ -1,11 +1,16 @@
 package authentication;
 
+import account.User;
 import shop.Data;
 
 
-public abstract class AdminAuthenticator extends Data implements Authenticator {
+public class AdminAuthenticator extends Data implements Authenticator {
     private String message;
 
+    @Override
+    public void signUp(String userName, String pass, String name, String phoneNumber, String address){
+        setMessage("THE STORE HAS ONLY ONE ADMIN");
+    }
     @Override
     public void signIn(String userName, String pass) {
         if(admin.getAdminPass().equals(pass) && userName.equals(admin.getAdminID())){
