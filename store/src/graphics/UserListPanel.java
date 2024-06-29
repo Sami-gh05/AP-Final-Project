@@ -1,9 +1,9 @@
 package graphics;
+
 import account.User;
-import product.Cloth;
-import product.Phone;
 import product.Product;
 import shop.Data;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Map;
 
-public class UserListPanel{
+public class UserListPanel {
     private JPanel mainPanel;
     private JPanel userPanel;
     private JPanel detailPanel;

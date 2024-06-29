@@ -17,7 +17,11 @@ public class UsersDatabaseManager implements DatabaseManager<User>{
     CryptoService cryptoService;
 
     public UsersDatabaseManager(){
-        cryptoService = new AESCrypto();
+        try {
+            cryptoService = new SimpleEncryption(3);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -66,6 +70,8 @@ public class UsersDatabaseManager implements DatabaseManager<User>{
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -129,6 +135,8 @@ public class UsersDatabaseManager implements DatabaseManager<User>{
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
         return users;
     }
