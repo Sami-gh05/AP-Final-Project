@@ -8,7 +8,7 @@ import java.awt.*;
 
 public class SignUp_SignIn extends JFrame {
     private final JPanel root = new JPanel(new GridBagLayout());
-    private final JButton loginButton = new JButton();
+    private final JButton loginButton1 = new JButton(), loginButton2 = new JButton(), loginButton3 = new JButton();
     private final JLabel usernameLabel = new JLabel("Username:");
     private final JTextField usernameField = new JTextField(20);
     private final JLabel passwordLabel = new JLabel("Password:");
@@ -32,13 +32,13 @@ public class SignUp_SignIn extends JFrame {
         gbc.gridwidth = 2;
         root.add(welcomeLabel, gbc);
 
-        JButton signUp = new JButton("Sign Up");
+        JButton signUp = new JButton("User Sign Up");
         signUp.addActionListener(e -> showSignUpFields());
         gbc.gridy = 1;
         root.add(signUp, gbc);
 
-        JButton signIn = new JButton("Sign In");
-        signIn.addActionListener(e -> showUserLoginFields("Sign In"));
+        JButton signIn = new JButton("User Sign In");
+        signIn.addActionListener(e -> showUserLoginFields("User Sign In"));
         gbc.gridy = 2;
         root.add(signIn, gbc);
 
@@ -47,11 +47,24 @@ public class SignUp_SignIn extends JFrame {
         gbc.gridy = 3;
         root.add(admin, gbc);
 
-        loginButton.setVisible(false);
+        loginButton1.setVisible(false);
+        loginButton2.setVisible(false);
+        loginButton3.setVisible(false);
 
-        backButton.addActionListener(e -> showInitialFields());
+        loginButton1.setFocusable(false);
+        loginButton2.setFocusable(false);
+        loginButton3.setFocusable(false);
+        backButton.setFocusable(false);
+
+
+        backButton.addActionListener(e -> {showInitialFields();
+                                        usernameField.setText("");
+                                        passwordField.setText("");
+                                        nameField.setText("");
+                                        phoneField.setText("");
+                                        addressField.setText("");
+        });
         backButton.setVisible(false);
-
         add(root);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
@@ -76,7 +89,7 @@ public class SignUp_SignIn extends JFrame {
         root.add(signUp, gbc);
 
         JButton signIn = new JButton("User Sign In");
-        signIn.addActionListener(e -> showUserLoginFields("Sign In"));
+        signIn.addActionListener(e -> showUserLoginFields("User Sign In"));
         gbc.gridy = 2;
         root.add(signIn, gbc);
 
@@ -85,12 +98,16 @@ public class SignUp_SignIn extends JFrame {
         gbc.gridy = 3;
         root.add(admin, gbc);
 
+        admin.setFocusable(false);
+        signIn.setFocusable(false);
+        signUp.setFocusable(false);
+
         revalidate();
         repaint();
     }
 
     private void showUserLoginFields(String buttonText) {
-        UserAuthenticator authentication = new UserAuthenticator();
+        UserAuthenticator userAuthentication = new UserAuthenticator();
 
         root.removeAll();
         GridBagConstraints gbc = new GridBagConstraints();
@@ -115,25 +132,27 @@ public class SignUp_SignIn extends JFrame {
         gbc.gridx = 1;
         root.add(passwordField, gbc);
 
-        loginButton.setText(buttonText);
-        loginButton.setVisible(true);
+        loginButton1.setText(buttonText);
+        loginButton1.setVisible(true);
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 2;
-        root.add(loginButton, gbc);
+        root.add(loginButton1, gbc);
 
         //for user log up
-        loginButton.addActionListener(e -> {
+        loginButton1.addActionListener(e -> {
             try{
                 //it checks whether the user exists or not
-                authentication.signIn(  usernameField.getText(),
+                userAuthentication.signIn(  usernameField.getText(),
                         passwordField.getText());
             }
             catch (Exception exception){
-                authentication.setMessage("PLEASE FILL ALL THE GAPS CORRECTLY");
+                userAuthentication.setMessage("PLEASE FILL ALL THE GAPS CORRECTLY");
             }
-            JOptionPane.showMessageDialog(this, authentication.getMessage());
-            if(authentication.getMessage().equals("LOGGED IN SUCCESSFULLY")){
+            JOptionPane.showMessageDialog(this, userAuthentication.getMessage());
+            if(userAuthentication.getMessage().equals("LOGGED IN SUCCESSFULLY")){
+                usernameField.setText("");
+                passwordField.setText("");
                 new ProductsPanel();
                 this.dispose();
             }
@@ -148,7 +167,7 @@ public class SignUp_SignIn extends JFrame {
     }
 
     private void showAdminLoginFields(String buttonText) {
-        AdminAuthenticator authentication = new AdminAuthenticator();
+        AdminAuthenticator adminAuthentication = new AdminAuthenticator();
 
         root.removeAll();
         GridBagConstraints gbc = new GridBagConstraints();
@@ -173,24 +192,26 @@ public class SignUp_SignIn extends JFrame {
         gbc.gridx = 1;
         root.add(passwordField, gbc);
 
-        loginButton.setText(buttonText);
-        loginButton.setVisible(true);
+        loginButton2.setText(buttonText);
+        loginButton2.setVisible(true);
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 2;
-        root.add(loginButton, gbc);
+        root.add(loginButton2, gbc);
 
         //for admin log in
-        loginButton.addActionListener(e -> {
+        loginButton2.addActionListener(e -> {
             try{
-                authentication.signIn(  usernameField.getText(),
+                adminAuthentication.signIn(  usernameField.getText(),
                                         passwordField.getText());
             }
             catch (Exception exception){
-                authentication.setMessage("PLEASE FILL ALL THE GAPS CORRECTLY");
+                adminAuthentication.setMessage("PLEASE FILL ALL THE GAPS CORRECTLY");
             }
-            JOptionPane.showMessageDialog(this, authentication.getMessage());
-            if(authentication.getMessage().equals("LOGGED IN SUCCESSFULLY")){
+            JOptionPane.showMessageDialog(this, adminAuthentication.getMessage());
+            if(adminAuthentication.getMessage().equals("LOGGED IN SUCCESSFULLY")){
+                usernameField.setText("");
+                passwordField.setText("");
                 new ProductsPanel();
                 this.dispose();
             }
@@ -245,15 +266,15 @@ public class SignUp_SignIn extends JFrame {
         gbc.gridx = 1;
         root.add(addressField, gbc);
 
-        loginButton.setText("Sign Up");
-        loginButton.setVisible(true);
+        loginButton3.setText("Sign Up");
+        loginButton3.setVisible(true);
         gbc.gridx = 0;
         gbc.gridy = 6;
         gbc.gridwidth = 2;
-        root.add(loginButton, gbc);
+        root.add(loginButton3, gbc);
 
         //for user sign up
-        loginButton.addActionListener(e -> {
+        loginButton3.addActionListener(e -> {
             try{
                 //it checks whether the user is repetitive or not
                 authentication.signUp(  usernameField.getText(),
@@ -267,6 +288,11 @@ public class SignUp_SignIn extends JFrame {
             }
             JOptionPane.showMessageDialog(this, authentication.getMessage());
             if(authentication.getMessage().equals("SIGNED UP SUCCESSFULLY")){
+                usernameField.setText("");
+                passwordField.setText("");
+                nameField.setText("");
+                phoneField.setText("");
+                addressField.setText("");
                 new ProductsPanel();
                 this.dispose();
             }
