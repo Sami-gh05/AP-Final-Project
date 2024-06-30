@@ -57,9 +57,9 @@ public abstract class Product {
         this.image = image;
     }
 
-    public void setImageIcon(ImageIcon imageIcon) {
+    /*public void setImageIcon(ImageIcon imageIcon) {
         this.imageIcon = imageIcon;
-    }
+    }*/
 
     public void setImageLabel(JLabel imageLabel){
         this.imageLabel = imageLabel;
@@ -73,6 +73,9 @@ public abstract class Product {
         return imageIcon;
     }
 
+    public void setImageIcon(ImageIcon imageIcon) {
+        this.imageIcon = imageIcon;
+    }
 
     public void fillIconWithByte(){
         this.imageIcon = new ImageIcon(byteArrayToImage(this.image));
@@ -107,5 +110,14 @@ public abstract class Product {
         baos.close();
 
         return imageInByte;
+    }
+
+    public String getName() {
+        return this.title;
+    }
+
+    public String getCategory() {
+        // Return classes which are extended from Product as the category of the products
+        return this.getClass().getSimpleName();
     }
 }
