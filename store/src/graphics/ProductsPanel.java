@@ -1,64 +1,85 @@
 package graphics;
 
+import product.Cloth;
+import product.Phone;
+import product.Product;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public abstract class ProductsPanel extends JFrame {
+public abstract class ProductsPanel {
 
+    protected JFrame frame;
     protected JPanel root;
+    protected List<Product> products;
 
-    public ProductsPanel() {
+
+
+    public ProductsPanel(List<Product> products) {
+        this.products = products;
+
+        frame = new JFrame();
         root = new JPanel(new BorderLayout());
+
+        frame.setTitle("Online Shop");
+        frame.setSize(1200, 800);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
+        frame.setVisible(true);
 
         // Header
         JPanel header = createHeader();
         root.add(header, BorderLayout.NORTH);
 
         // Product Grid
-        JPanel productGrid = createProductGrid();
+        JPanel productGrid = showProducts();
         root.add(productGrid, BorderLayout.CENTER);
 
         // Filters
         JPanel filters = createFilters();
         root.add(filters, BorderLayout.EAST);
 
-        this.add(root);
-        this.setTitle("Online Shop");
-        this.setSize(1200, 800);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setLocationRelativeTo(null);
-        this.setResizable(false);
-        this.setVisible(true);
+        frame.add(root);
+    }
+
+    public JPanel getMainPanel(){
+        return root;
     }
 
     public abstract JPanel createHeader();
 
-    private JPanel createProductGrid() {
-        JPanel grid = new JPanel(new GridLayout(3, 3));
+    private JPanel showProducts() {
+        JPanel allProductsPanel = new JPanel();
+        allProductsPanel.setLayout(new FlowLayout());
 
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                JPanel productBox = createProductBox();
-                grid.add(productBox);
+        if(products != null){
+            for(Product product: products){
+                if(product instanceof Cloth){
+                    Cloth cloth = (Cloth) product;
+                    allProductsPanel.add(createProductBox(cloth));
+                }
+                else if(product instanceof Phone){
+                    Phone phone = (Phone) product;
+                    allProductsPanel.add(createProductBox(phone));
+                }
+
             }
         }
 
-        return grid;
+        JScrollPane scrollPane = new JScrollPane(allProductsPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        root.add(scrollPane, BorderLayout.EAST);
+
+        return  allProductsPanel;
     }
 
-    private JPanel createProductBox() {
-        JPanel box = new JPanel();
-        box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
-
-        JLabel productName = new JLabel("Product Name");
-        JLabel productPrice = new JLabel("$1000");
-        JLabel productRating = new JLabel("★★★★★");
-
-        box.add(productName);
-        box.add(productPrice);
-        box.add(productRating);
-        return box;
-    }
+    //overloading polymorphism
+    public abstract JPanel createProductBox(Cloth cloth);
+    public abstract JPanel createProductBox(Phone phone);
 
     private JPanel createFilters() {
         JPanel filters = new JPanel();
@@ -66,9 +87,8 @@ public abstract class ProductsPanel extends JFrame {
 
         JLabel categoryLabel = new JLabel("Category");
         JComboBox<String> categoryComboBox = new JComboBox<>();
-        categoryComboBox.addItem("Car");
+        categoryComboBox.addItem("Cloth");
         categoryComboBox.addItem("Phone");
-        categoryComboBox.addItem("Laptop");
 
         JLabel priceLabel = new JLabel("Price");
         JSlider priceSlider = new JSlider(0, 2000, 1000);
@@ -83,9 +103,6 @@ public abstract class ProductsPanel extends JFrame {
         return filters;
     }
 
-    /*public static void main(String[] args) {
-        new ProductsPanel();
-    }*/
 
     public JPanel getRoot() {
         return root;

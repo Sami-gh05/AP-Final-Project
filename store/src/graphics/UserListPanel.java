@@ -15,15 +15,12 @@ public class UserListPanel {
     private JPanel mainPanel;
     private JPanel userPanel;
     private JPanel detailPanel;
+
     private CardLayout cardLayout;
     private List<User> users;
     //private AdminMainPanel
     public UserListPanel() {
         this.users = Data.getUsers();
-
-
-    }
-    public JPanel getMainPanel(){
         // Create the main panel with CardLayout
         mainPanel = new JPanel();
         cardLayout = new CardLayout();
@@ -47,6 +44,8 @@ public class UserListPanel {
 
         // Load the user list
         loadUserList();
+    }
+    public JPanel getMainPanel(){
         return mainPanel;
     }
 
