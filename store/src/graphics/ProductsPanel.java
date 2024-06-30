@@ -55,7 +55,7 @@ public abstract class ProductsPanel {
 
     public abstract JPanel createHeader();
 
-    private JPanel showProducts() {
+    public JPanel showProducts() {
         JPanel allProductsPanel = new JPanel();
         allProductsPanel.setLayout(new FlowLayout());
 
@@ -77,7 +77,7 @@ public abstract class ProductsPanel {
     }
 
     //overloading polymorphism
-    private JPanel showProducts(String category) {
+    public JPanel showProducts(String category) {
         JPanel allProductsPanel = new JPanel();
         allProductsPanel.setLayout(new FlowLayout());
 
@@ -101,7 +101,7 @@ public abstract class ProductsPanel {
 
         return  allProductsPanel;
     }
-    private JPanel showProducts(List<Product> sorted) {
+    public JPanel showProducts(List<Product> sorted) {
         JPanel allProductsPanel = new JPanel();
         allProductsPanel.setLayout(new FlowLayout());
 
