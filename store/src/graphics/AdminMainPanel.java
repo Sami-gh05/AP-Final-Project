@@ -50,6 +50,7 @@ public class AdminMainPanel extends ProductsPanel {
             AdminAuthenticator authenticator = new AdminAuthenticator();
             authenticator.logOut(Admin.getAdminID());
             super.frame.dispose();
+            Data.fillDatabase();
             new SignUp_SignIn();
         });
         JButton refreshButton = new JButton("Refresh");
@@ -288,3 +289,4 @@ public class AdminMainPanel extends ProductsPanel {
         return panel;
     }
 }
+
