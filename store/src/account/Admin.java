@@ -1,6 +1,6 @@
 package account;
 public class Admin {
-    private static String adminID = "Administrator", adminPass = "StoreKeeper";
+    private static String adminID = "admin", adminPass = "admin";
     private static String message;
     private static boolean loginStatus;
     private static float storeBalance = 0;
