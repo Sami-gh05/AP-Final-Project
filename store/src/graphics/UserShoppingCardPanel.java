@@ -7,7 +7,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Map;
 
-
 public class UserShoppingCardPanel {
     private JPanel mainPanel;
     private User user;
@@ -37,7 +36,9 @@ public class UserShoppingCardPanel {
         cardPanel = new JPanel();
         cardPanel.setLayout(new BoxLayout(cardPanel, BoxLayout.Y_AXIS));
 
+        boolean hasProducts = false;
         for (Map.Entry<Product, Integer> entry : user.getShoppingCard().entrySet()) {
+            hasProducts = true;
             Product product = entry.getKey();
             JPanel productPanel = new JPanel();
             productPanel.setLayout(new BoxLayout(productPanel, BoxLayout.X_AXIS));
@@ -50,6 +51,13 @@ public class UserShoppingCardPanel {
             productPanel.add(productName);
             productPanel.add(productPrice);
             cardPanel.add(productPanel);
+        }
+
+        if (!hasProducts) {
+            JLabel emptyLabel = new JLabel("Your shopping cart is empty.");
+            emptyLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            cardPanel.add(emptyLabel);
+            totalCostLabel = new JLabel("Total Cost: " + totalCost);
         }
 
         totalCostPanel = new JPanel();
@@ -68,7 +76,7 @@ public class UserShoppingCardPanel {
         JPanel header = new JPanel();
         header.setLayout(new BoxLayout(header, BoxLayout.X_AXIS));
 
-        JLabel headerLabel = new JLabel("Shopping Card");
+        JLabel headerLabel = new JLabel("Shopping Cart");
         headerLabel.setFont(new Font("Arial", Font.BOLD, 20));
 
         header.add(headerLabel);
@@ -81,11 +89,20 @@ public class UserShoppingCardPanel {
 
         buyButton = new JButton("Buy");
         buyButton.addActionListener(e -> {
-            user.buyProducts();
-            totalCost = 0;
-            totalCostLabel.setText("Total Cost: " + totalCost);
-            cardPanel.removeAll();
-            refreshFrame();
+            if (user.getBalance() >= totalCost) {
+                user.buyProducts();
+                totalCost = 0;
+                totalCostLabel.setText("Total Cost: " + totalCost);
+                cardPanel.removeAll();
+                cardPanel.add(new JLabel("Your shopping cart is empty."));
+                refreshFrame();
+            } else {
+                cardPanel.removeAll();
+                JLabel errorLabel = new JLabel("Please charge your card.");
+                errorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+                cardPanel.add(errorLabel);
+                refreshFrame();
+            }
         });
 
         clearButton = new JButton("Clear");
@@ -94,6 +111,7 @@ public class UserShoppingCardPanel {
             totalCost = 0;
             totalCostLabel.setText("Total Cost: " + totalCost);
             cardPanel.removeAll();
+            cardPanel.add(new JLabel("Your shopping cart is empty."));
             refreshFrame();
         });
 
@@ -108,9 +126,7 @@ public class UserShoppingCardPanel {
         buttonPanel.add(clearButton);
         buttonPanel.add(backButton);
         return buttonPanel;
-
-
-}
+    }
 
     private void refreshFrame() {
         root.revalidate();
