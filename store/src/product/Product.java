@@ -47,11 +47,25 @@ public abstract class Product {
         this.image = image;
     }
 
+    public void setImageIcon(ImageIcon imageIcon) {
+        this.imageIcon = imageIcon;
+    }
     public ImageIcon getImageIcon() {
-
-        this.imageIcon = new ImageIcon(byteArrayToImage(this.image));
         return imageIcon;
     }
+
+
+    public void fillIconWithByte(){
+        this.imageIcon = new ImageIcon(byteArrayToImage(this.image));
+    }
+    public void fillByteWithIcon(){
+        try {
+            this.image = imageIconToByteArray(this.imageIcon);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     private BufferedImage byteArrayToImage(byte[] imageData) {
         try {
@@ -61,5 +75,18 @@ public abstract class Product {
             e.printStackTrace();
             return null;
         }
+    }
+    private byte[] imageIconToByteArray(ImageIcon icon) throws IOException {
+        BufferedImage bufferedImage = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_RGB);
+
+        icon.paintIcon(null, bufferedImage.getGraphics(), 0, 0);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(bufferedImage, "jpg", baos);
+        baos.flush();
+        byte[] imageInByte = baos.toByteArray();
+        baos.close();
+
+        return imageInByte;
     }
 }

@@ -114,6 +114,7 @@ public class UsersDatabaseManager implements DatabaseManager<User> {
             if (entry.getKey() instanceof Phone) {
                 Phone phone = (Phone) entry.getKey();
                 int amount = entry.getValue();
+                phone.fillByteWithIcon();
 
                 pstmtPhone.setString(1, phone.getTitle());
                 pstmtPhone.setDouble(2, phone.getPrice());
@@ -135,6 +136,7 @@ public class UsersDatabaseManager implements DatabaseManager<User> {
             if (entry.getKey() instanceof Cloth) {
                 Cloth cloth = (Cloth) entry.getKey();
                 int amount = entry.getValue();
+                cloth.fillByteWithIcon();
 
                 pstmtCloth.setString(1, cloth.getTitle());
                 pstmtCloth.setDouble(2, cloth.getPrice());
@@ -165,6 +167,7 @@ public class UsersDatabaseManager implements DatabaseManager<User> {
 
             Phone phone = new Phone(name, (float) price, companyName, model, color);
             phone.setImage(image);
+            phone.fillIconWithByte();
 
             if (tableName.equals("PhonePreviousPurchases")) {
                 user.addToPreviousPurchases(phone, amount);
@@ -190,6 +193,7 @@ public class UsersDatabaseManager implements DatabaseManager<User> {
 
             Cloth cloth = new Cloth(name, (float) price, size, color, sex);
             cloth.setImage(image);
+            cloth.fillIconWithByte();
 
             if (tableName.equals("ClothPreviousPurchases")) {
                 user.addToPreviousPurchases(cloth, amount);

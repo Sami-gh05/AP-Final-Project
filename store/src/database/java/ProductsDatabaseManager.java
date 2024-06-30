@@ -39,6 +39,7 @@ public class ProductsDatabaseManager implements DatabaseManager<Product> {
             for (Product product : products) {
                 if (product instanceof Phone) {
                     Phone phone = (Phone) product;
+                    phone.fillByteWithIcon();
                     pstmtPhone.setString(1, phone.getTitle());
                     pstmtPhone.setDouble(2, phone.getPrice());
                     pstmtPhone.setString(3, phone.getCompanyName());
@@ -48,6 +49,7 @@ public class ProductsDatabaseManager implements DatabaseManager<Product> {
                     pstmtPhone.executeUpdate();
                 } else if (product instanceof Cloth) {
                     Cloth cloth = (Cloth) product;
+                    cloth.fillByteWithIcon();
                     pstmtCloth.setString(1, cloth.getTitle());
                     pstmtCloth.setDouble(2, cloth.getPrice());
                     pstmtCloth.setString(3, cloth.getSize());
@@ -84,6 +86,7 @@ public class ProductsDatabaseManager implements DatabaseManager<Product> {
                 byte[] image = rsPhones.getBytes("image");
                 Phone phone = new Phone(name, (float) price, companyName, model, color);
                 phone.setImage(image);
+                phone.fillIconWithByte();
                 products.add(phone);
             }
 
@@ -99,6 +102,7 @@ public class ProductsDatabaseManager implements DatabaseManager<Product> {
                 byte[] image = rsClothes.getBytes("image");
                 Cloth cloth = new Cloth(name, (float) price, size, color, sex);
                 cloth.setImage(image);
+                cloth.fillIconWithByte();
                 products.add(cloth);
             }
         } catch (SQLException e) {
