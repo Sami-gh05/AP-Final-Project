@@ -54,6 +54,7 @@ public class UserMainPanel extends ProductsPanel{
             UserAuthenticator authenticator = new UserAuthenticator();
             authenticator.logOut(user.getUserName());
             super.frame.dispose();
+            Data.fillDatabase();
             new SignUp_SignIn();
         });
 
@@ -154,19 +155,25 @@ public class UserMainPanel extends ProductsPanel{
 
         // Buttons panel
         JPanel buttonsPanel = new JPanel();
-        buttonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
 
         JButton addToCartButton = new JButton("Add to Cart");
         addToCartButton.addActionListener(e -> {
-            // Implement add to cart functionality here
+            user.addTOShoppingCard(cloth, 1);
             JOptionPane.showMessageDialog(addToCartButton, "Added to your Shopping Cart");
         });
         buttonsPanel.add(addToCartButton);
 
+        // Text field for rating
+        JTextField ratingField = new JTextField(5);
+        buttonsPanel.add(ratingField);
+
         JButton rateButton = new JButton("Rate");
         rateButton.addActionListener(e -> {
-            // Implement rate functionality here
-            JOptionPane.showMessageDialog(rateButton, "Rated successfully");
+            cloth.updateRate(Integer.parseInt(ratingField.getText()));
+            String rating = ratingField.getText();
+            // Add logic to handle the rating
+            JOptionPane.showMessageDialog(rateButton, "Rated successfully with " + rating);
         });
         buttonsPanel.add(rateButton);
 
@@ -174,6 +181,7 @@ public class UserMainPanel extends ProductsPanel{
 
         return box;
     }
+
 
     @Override
     public JPanel createProductBox(Phone phone) {
@@ -209,19 +217,25 @@ public class UserMainPanel extends ProductsPanel{
 
         // Buttons panel
         JPanel buttonsPanel = new JPanel();
-        buttonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
 
         JButton addToCartButton = new JButton("Add to Cart");
         addToCartButton.addActionListener(e -> {
-            // Implement add to cart functionality here
+            user.addTOShoppingCard(phone, 1);
             JOptionPane.showMessageDialog(addToCartButton, "Added to your Shopping Cart");
         });
         buttonsPanel.add(addToCartButton);
 
+        // Text field for rating
+        JTextField ratingField = new JTextField(5);
+        buttonsPanel.add(ratingField);
+
         JButton rateButton = new JButton("Rate");
         rateButton.addActionListener(e -> {
-            // Implement rate functionality here
-            JOptionPane.showMessageDialog(rateButton, "Rated successfully");
+            phone.updateRate(Integer.parseInt(ratingField.getText()));
+            String rating = ratingField.getText();
+            // Add logic to handle the rating
+            JOptionPane.showMessageDialog(rateButton, "Rated successfully with " + rating);
         });
         buttonsPanel.add(rateButton);
 
@@ -229,6 +243,7 @@ public class UserMainPanel extends ProductsPanel{
 
         return box;
     }
+
     public JPanel showProducts() {
         JPanel allProductsPanel = new JPanel();
         allProductsPanel.setLayout(new GridLayout(0, 3, 10, 10)); // 3 columns
