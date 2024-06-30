@@ -13,6 +13,7 @@ public abstract class Product {
     protected String label;
     private ImageIcon imageIcon;
     private byte[] image;
+    private JLabel imageLabel;
 
     public Product(String title, double price){
         this.title = title;
@@ -33,10 +34,19 @@ public abstract class Product {
         this.price = price;
     }
     public int getRate(){
-        return this.getRate();
+        return this.rate;
     }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public String getProductCode() {
+        return productCode;
+    }
+
     public void updateRate(int rate){ // users can rate each product
-        this.rate = (this.rate * ratersNum) + rate / ++ratersNum;
+        this.rate = ((this.rate * ratersNum) + rate) / ++ratersNum;
     }
 
     public byte[] getImage() {
@@ -47,9 +57,18 @@ public abstract class Product {
         this.image = image;
     }
 
-    public void setImageIcon(ImageIcon imageIcon) {
+    /*public void setImageIcon(ImageIcon imageIcon) {
         this.imageIcon = imageIcon;
+    }*/
+
+    public void setImageLabel(JLabel imageLabel){
+        this.imageLabel = imageLabel;
     }
+
+    public JLabel getImageLabel() {
+        return imageLabel;
+    }
+
     public ImageIcon getImageIcon() {
         return imageIcon;
     }

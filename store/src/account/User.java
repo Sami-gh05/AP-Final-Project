@@ -13,6 +13,7 @@ public class User {
     private Map<Product, Integer> previousPurchases;
     private Map<Product, Integer> shoppingCard;
     private boolean loginStatus;
+    private String message;
     public User(String userName, String password, String name, String phoneNumber, String address){
         this.userName = userName;
         this.password = password;
@@ -28,48 +29,52 @@ public class User {
     public String getUserName() {
         return userName;
     }
-
-    public void changeUserName(String password, String userName) {
-        if(this.password.equals(password))
-            this.userName = userName;
-        else
-            System.out.println("ACCESS DENIED");
+    public String getPassword() {
+        return password;
     }
 
-    public String getPassword() {
-        if(loginStatus)
-            return password;
-        else
-            return "ACCESS DENIED";
+    public void changeUserName(String userName) {
+        if(loginStatus){
+            this.userName = userName;
+            setMessage("User name updated");
+        }
     }
 
     public void changePassword(String presentPass, String newPass) {
-        if(this.password.equals(presentPass))
+        if(presentPass.equals(this.getPassword())){
             this.password = newPass;
+            setMessage("Password updated");
+        }
         else
-            System.out.println("ACCESS DENIED");
+            setMessage("Please enter correct password");
     }
     public void changeName(String name) {
-        if(loginStatus)
+        if(loginStatus){
             this.name = name;
-        else
-            System.out.println("ACCESS DENIED");
+            setMessage("Name updated");
+        }
+
     }
     public void changeAddress(String address) {
-        if(loginStatus)
+        if(loginStatus){
             this.address = address;
-        else
-            System.out.println("ACCESS DENIED");
+            setMessage("Address updated");
+        }
+
     }
     public void changePhoneNumber(String phoneNumber) {
         if(loginStatus){
-            if(PhoneNumberValidator.validation(phoneNumber))
+            if(PhoneNumberValidator.validation(phoneNumber)){
                 this.phoneNumber = phoneNumber;
+                setMessage("Phone number updated");
+            }
             else
-                System.out.println("Invalid phone Number");
+                setMessage("Enter valid phone number");
         }
-        else
-            System.out.println("ACCESS DENIED");
+    }
+    public void changeBalance(float amount){
+        this.balance += amount;
+        setMessage("Balance update");
     }
 
     public String getName() {
@@ -107,12 +112,7 @@ public class User {
     public float getBalance() {
         return balance;
     }
-    public void balanceIncrease(float amount){
-        this.balance += amount;
-    }
-    public void balanceDecrease(float amount){
-        this.balance -= amount;
-    }
+
     //adding a product into shopping card:
     public void addTOShoppingCard(Product product, int amount){
         this.shoppingCard.put(product, amount);
@@ -130,12 +130,11 @@ public class User {
         //TODO
     }
 
-    public void setShoppingCard(Map<Product, Integer> shoppingCard) {
-        this.shoppingCard = shoppingCard;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    public void setPreviousPurchases(Map<Product, Integer> previousPurchases) {
-        this.previousPurchases = previousPurchases;
+    public String getMessage() {
+        return message;
     }
-
 }

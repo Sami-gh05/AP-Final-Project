@@ -2,6 +2,7 @@ package graphics;
 
 import authentication.AdminAuthenticator;
 import authentication.UserAuthenticator;
+import shop.Data;
 
 import javax.swing.*;
 import java.awt.*;
@@ -58,11 +59,11 @@ public class SignUp_SignIn extends JFrame {
 
 
         backButton.addActionListener(e -> {showInitialFields();
-                                        usernameField.setText("");
-                                        passwordField.setText("");
-                                        nameField.setText("");
-                                        phoneField.setText("");
-                                        addressField.setText("");
+            usernameField.setText("");
+            passwordField.setText("");
+            nameField.setText("");
+            phoneField.setText("");
+            addressField.setText("");
         });
         backButton.setVisible(false);
         add(root);
@@ -153,16 +154,16 @@ public class SignUp_SignIn extends JFrame {
             try{
                 //it checks whether the user exists or not
                 userAuthentication.signIn(  usernameField.getText(),
-                                            passwordField.getText());
+                        passwordField.getText());
             }
             catch (Exception exception){
                 userAuthentication.setMessage("PLEASE FILL ALL THE GAPS CORRECTLY");
             }
             JOptionPane.showMessageDialog(this, userAuthentication.getMessage());
             if(userAuthentication.getMessage().equals("LOGGED IN SUCCESSFULLY")){
+                new UserMainPanel(userAuthentication.getUser(usernameField.getText()), Data.getProducts());
                 usernameField.setText("");
                 passwordField.setText("");
-                new UserMainPanel(userAuthentication.getUser(usernameField.getText()));
                 this.dispose();
             }
         });
@@ -212,7 +213,7 @@ public class SignUp_SignIn extends JFrame {
         loginButton2.addActionListener(e -> {
             try{
                 adminAuthentication.signIn(  usernameField.getText(),
-                                            passwordField.getText());
+                        passwordField.getText());
             }
             catch (Exception exception){
                 adminAuthentication.setMessage("PLEASE FILL ALL THE GAPS CORRECTLY");
@@ -221,7 +222,7 @@ public class SignUp_SignIn extends JFrame {
             if(adminAuthentication.getMessage().equals("LOGGED IN SUCCESSFULLY")){
                 usernameField.setText("");
                 passwordField.setText("");
-                new AdminMainPanel();
+                new AdminMainPanel(Data.getProducts());
                 this.dispose();
             }
         });
@@ -302,7 +303,7 @@ public class SignUp_SignIn extends JFrame {
                 nameField.setText("");
                 phoneField.setText("");
                 addressField.setText("");
-                new UserMainPanel(authentication.getUser(usernameField.getText()));
+                new UserMainPanel(authentication.getUser(usernameField.getText()), Data.getProducts());
                 this.dispose();
             }
         });

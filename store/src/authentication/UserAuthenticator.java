@@ -42,7 +42,7 @@ public class UserAuthenticator extends Data implements Authenticator{
         }
     }
     public boolean isUser(String userName){
-        for(User user : super.users){
+        for(User user : users){
             if(user.getUserName().equals(userName)){
                 selectedUser = user;
                 return true;

@@ -1,62 +1,110 @@
 package graphics;
 
+import product.Cloth;
+import product.Phone;
+import product.Product;
+
 import javax.swing.*;
 import java.awt.*;
-import javax.swing.JScrollPane;
-import javax.swing.JPanel;
-public abstract class ProductsPanel extends JFrame {
+import java.util.ArrayList;
+import java.util.List;
 
+public abstract class ProductsPanel {
+
+    protected JFrame frame;
     protected JPanel root;
+    protected List<Product> products;
 
-    public ProductsPanel() {
+
+
+    public ProductsPanel(List<Product> products) {
+        this.products = products;
+
+        frame = new JFrame();
         root = new JPanel(new BorderLayout());
+
+        frame.setTitle("Online Shop");
+        frame.setSize(1200, 800);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
+        frame.setVisible(true);
 
         // Header
         JPanel header = createHeader();
         root.add(header, BorderLayout.NORTH);
 
         // Product Grid
-        JScrollPane productGrid = createProductGrid("All");
+        JPanel productGrid = showProducts();
         root.add(productGrid, BorderLayout.CENTER);
 
-        this.add(root);
-        this.setTitle("Online Shop");
-        this.setSize(1200, 800);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setLocationRelativeTo(null);
-        this.setResizable(false);
-        this.setVisible(true);
+        // Filters
+        JPanel filters = createFilters();
+        root.add(filters, BorderLayout.EAST);
+
+        frame.add(root);
+    }
+
+    public JPanel getMainPanel(){
+        return root;
     }
 
     public abstract JPanel createHeader();
 
-    JScrollPane createProductGrid(String selectedCategory) {
+    private JPanel showProducts() {
+        JPanel allProductsPanel = new JPanel();
+        allProductsPanel.setLayout(new FlowLayout());
 
-        // use layout manager to create scrollable grid and fixed width and height for each product box
-        JPanel grid = new JPanel(new GridLayout(0, 3, 10, 100));
+        if(products != null){
+            for(Product product: products){
+                if(product instanceof Cloth){
+                    Cloth cloth = (Cloth) product;
+                    allProductsPanel.add(createProductBox(cloth));
+                }
+                else if(product instanceof Phone){
+                    Phone phone = (Phone) product;
+                    allProductsPanel.add(createProductBox(phone));
+                }
 
-        for (int i = 0; i < 30; i++) {
-            JPanel productBox = createProductBox();
-            grid.add(productBox);
+            }
         }
-        JScrollPane scrollPane = new JScrollPane(grid);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        return scrollPane;
 
+        JScrollPane scrollPane = new JScrollPane(allProductsPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        root.add(scrollPane, BorderLayout.EAST);
+
+        return  allProductsPanel;
     }
 
-    private JPanel createProductBox() {
-        JPanel box = new JPanel();
-        box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+    //overloading polymorphism
+    public abstract JPanel createProductBox(Cloth cloth);
+    public abstract JPanel createProductBox(Phone phone);
 
-        JLabel productName = new JLabel("Product Name");
-        JLabel productPrice = new JLabel("$1000");
-        JLabel productRating = new JLabel("★★★★★");
+    private JPanel createFilters() {
+        JPanel filters = new JPanel();
+        filters.setLayout(new BoxLayout(filters, BoxLayout.Y_AXIS));
 
-        box.add(productName);
-        box.add(productPrice);
-        box.add(productRating);
-        return box;
+        JLabel categoryLabel = new JLabel("Category");
+        JComboBox<String> categoryComboBox = new JComboBox<>();
+        categoryComboBox.addItem("Cloth");
+        categoryComboBox.addItem("Phone");
+
+        JLabel priceLabel = new JLabel("Price");
+        JSlider priceSlider = new JSlider(0, 2000, 1000);
+
+        JCheckBox availableGoodsCheckBox = new JCheckBox("Only available goods");
+
+        filters.add(categoryLabel);
+        filters.add(categoryComboBox);
+        filters.add(priceLabel);
+        filters.add(priceSlider);
+        filters.add(availableGoodsCheckBox);
+        return filters;
+    }
+
+
+    public JPanel getRoot() {
+        return root;
     }
 }

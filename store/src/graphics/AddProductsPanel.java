@@ -1,5 +1,9 @@
 package graphics;
 
+import product.Cloth;
+import product.Phone;
+import shop.Data;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -11,34 +15,41 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
-public class ProductsEditPanel implements ActionListener {
-    private AdminMainPanel adminMainPanel;
+public class AddProductsPanel implements ActionListener {
+    private JFrame adminMainPanel;
+    private JPanel root;
     private JButton addProductButton;
     private JButton addPhoneButton;
     private JButton addClothButton;
     private JButton confirmClothButton;
     private JButton confirmPhoneButton;
-    private JButton backButton;
+    private JButton backButton, backToMainButton;
     private JButton exitButton;
     private JButton deleteImageButton;
 
     // Fields for adding cloth
-    private JTextField titleField, priceField, sexField, sizeField, colorField, productCodeField;
-    private JTextField phoneTitleField, phonePriceField, phoneProductCodeField, phoneCompanyNameField, phoneModelField, phoneColorField;
+    private JTextField titleField, priceField, sexField, sizeField, colorField;
+    private JTextField phoneTitleField, phonePriceField, phoneCompanyNameField, phoneModelField, phoneColorField;
     private JLabel imageLabel, errorLabel;
 
-    public ProductsEditPanel(AdminMainPanel adminMainPanel) {
+    public AddProductsPanel(JFrame adminMainPanel, JPanel root) {
         this.adminMainPanel = adminMainPanel;
+        this.root = root;
         mainEditPanel();
     }
 
     public void mainEditPanel() {
         JPanel mainPanel = new JPanel();
-        addProductButton = createButton("+");
-        addProductButton.setBounds(100, 0, 20, 10);
+        addProductButton = createButton("Add Products");
+        addProductButton.setBounds(100, 200, 200, 10);
         addProductButton.addActionListener(this);
+        backToMainButton = createButton("Back to main");
+        backToMainButton.setBounds(300, 200, 200, 10);
+        backToMainButton.addActionListener(this);
         mainPanel.add(addProductButton);
-        this.adminMainPanel.removeAll();
+        mainPanel.add(backToMainButton);
+        this.adminMainPanel.getContentPane().removeAll();
+        this.adminMainPanel.add(mainPanel);
         this.adminMainPanel.revalidate();
         this.adminMainPanel.repaint();
 
@@ -55,12 +66,20 @@ public class ProductsEditPanel implements ActionListener {
         } else if (e.getSource() == confirmClothButton) {
             if (clothAllFieldsFilled()) {
                 errorLabel.setText("");
+                Cloth cloth = new Cloth(titleField.getText(), Double.parseDouble(priceField.getText()), sizeField.getText(), colorField.getText(), sexField.getText());
+                cloth.setImageLabel(imageLabel);
+                Data.addProduct(cloth);
+                addProductEntry();
             } else {
                 errorLabel.setText("Fill all the needed blanks");
             }
         } else if (e.getSource() == confirmPhoneButton) {
             if (phoneAllFieldsFilled()) {
                 errorLabel.setText("");
+                Phone phone = new Phone(phoneTitleField.getText(), Double.parseDouble(phonePriceField.getText()), phoneCompanyNameField.getText(), phoneModelField.getText(), phoneColorField.getText());
+                phone.setImageLabel(imageLabel);
+                Data.addProduct(phone);
+                addProductEntry();
             } else {
                 errorLabel.setText("Fill all the needed blanks");
             }
@@ -69,7 +88,13 @@ public class ProductsEditPanel implements ActionListener {
         } else if (e.getSource() == backButton) {
             addProductEntry(); // Return to add product entry panel
         } else if (e.getSource() == exitButton) {
-            adminMainPanel.setVisible(true); // Show admin main panel
+            adminMainPanel.setVisible(true);
+            adminMainPanel.revalidate();
+            adminMainPanel.repaint();
+        }
+        else if(e.getSource() == backToMainButton){
+            adminMainPanel.getContentPane().removeAll();
+            adminMainPanel.add(root);
             adminMainPanel.revalidate();
             adminMainPanel.repaint();
         }
@@ -86,9 +111,7 @@ public class ProductsEditPanel implements ActionListener {
         exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                adminMainPanel.add(adminMainPanel.createHeader()); // Show admin main panel
-                adminMainPanel.revalidate();
-                adminMainPanel.repaint();
+                mainEditPanel();
             }
         });
 
@@ -96,7 +119,7 @@ public class ProductsEditPanel implements ActionListener {
         addProductEntryPanel.add(addPhoneButton);
         addProductEntryPanel.add(exitButton);
 
-        this.adminMainPanel.removeAll();
+        this.adminMainPanel.getContentPane().removeAll();
         this.adminMainPanel.add(addProductEntryPanel);
         this.adminMainPanel.revalidate();
         this.adminMainPanel.repaint();
@@ -112,7 +135,7 @@ public class ProductsEditPanel implements ActionListener {
         phonePanel.add(backButton);
         phonePanel.add(confirmPhoneButton);
 
-        this.adminMainPanel.removeAll();
+        this.adminMainPanel.getContentPane().removeAll();
         this.adminMainPanel.add(phonePanel);
         this.adminMainPanel.revalidate();
         this.adminMainPanel.repaint();
@@ -128,7 +151,7 @@ public class ProductsEditPanel implements ActionListener {
         clothPanel.add(backButton);
         clothPanel.add(confirmClothButton);
 
-        this.adminMainPanel.removeAll();
+        this.adminMainPanel.getContentPane().removeAll();
         this.adminMainPanel.add(clothPanel);
         this.adminMainPanel.revalidate();
         this.adminMainPanel.repaint();
@@ -188,11 +211,10 @@ public class ProductsEditPanel implements ActionListener {
             sexField = addField(fieldsPanel, "Sex");
             sizeField = addField(fieldsPanel, "Size");
             colorField = addField(fieldsPanel, "Color");
-            productCodeField = addField(fieldsPanel, "Product Code");
+
         } else if (productType.equals("Phone")) {
             phoneTitleField = addField(fieldsPanel, "Title");
             phonePriceField = addField(fieldsPanel, "Price");
-            phoneProductCodeField = addField(fieldsPanel, "Product Code");
             phoneCompanyNameField = addField(fieldsPanel, "Company Name");
             phoneModelField = addField(fieldsPanel, "Model");
             phoneColorField = addField(fieldsPanel, "Color");
@@ -217,14 +239,12 @@ public class ProductsEditPanel implements ActionListener {
                 !sexField.getText().isEmpty() &&
                 !sizeField.getText().isEmpty() &&
                 !colorField.getText().isEmpty() &&
-                !productCodeField.getText().isEmpty() &&
                 imageLabel.getIcon() != null;
     }
 
     private boolean phoneAllFieldsFilled() {
         return !phoneTitleField.getText().isEmpty() &&
                 !phonePriceField.getText().isEmpty() &&
-                !phoneProductCodeField.getText().isEmpty() &&
                 !phoneCompanyNameField.getText().isEmpty() &&
                 !phoneModelField.getText().isEmpty() &&
                 !phoneColorField.getText().isEmpty() &&
