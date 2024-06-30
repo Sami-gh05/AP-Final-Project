@@ -6,7 +6,6 @@ import product.Product;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ProductsPanel {
@@ -35,23 +34,15 @@ public abstract class ProductsPanel {
         root.add(header, BorderLayout.NORTH);
 
         // Product Grid
-        JPanel productGrid = showProducts();
+        JPanel productGrid = showProducts(products);
         root.add(productGrid, BorderLayout.CENTER);
-
-        // Filters
-        JPanel filters = createFilters();
-        root.add(filters, BorderLayout.EAST);
 
         frame.add(root);
     }
 
-    public JPanel getMainPanel(){
-        return root;
-    }
-
     public abstract JPanel createHeader();
 
-    private JPanel showProducts() {
+    JPanel showProducts(List<Product> filteredProducts) {
         JPanel allProductsPanel = new JPanel();
         allProductsPanel.setLayout(new FlowLayout());
 
@@ -81,30 +72,4 @@ public abstract class ProductsPanel {
     public abstract JPanel createProductBox(Cloth cloth);
     public abstract JPanel createProductBox(Phone phone);
 
-    private JPanel createFilters() {
-        JPanel filters = new JPanel();
-        filters.setLayout(new BoxLayout(filters, BoxLayout.Y_AXIS));
-
-        JLabel categoryLabel = new JLabel("Category");
-        JComboBox<String> categoryComboBox = new JComboBox<>();
-        categoryComboBox.addItem("Cloth");
-        categoryComboBox.addItem("Phone");
-
-        JLabel priceLabel = new JLabel("Price");
-        JSlider priceSlider = new JSlider(0, 2000, 1000);
-
-        JCheckBox availableGoodsCheckBox = new JCheckBox("Only available goods");
-
-        filters.add(categoryLabel);
-        filters.add(categoryComboBox);
-        filters.add(priceLabel);
-        filters.add(priceSlider);
-        filters.add(availableGoodsCheckBox);
-        return filters;
-    }
-
-
-    public JPanel getRoot() {
-        return root;
-    }
 }

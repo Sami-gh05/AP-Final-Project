@@ -43,6 +43,8 @@ public class UserMainPanel extends ProductsPanel{
             new SignUp_SignIn();
         });
 
+        // Add comboBox for filtering products
+        header.add(createFilterPanel());
 
 
         header.add(userPanelButton);
@@ -50,6 +52,47 @@ public class UserMainPanel extends ProductsPanel{
         header.add(logOutButton);
         return header;
     }
+
+
+    // ComboBox for filtering products
+    public JPanel createFilterPanel(){
+        JPanel filterPanel = new JPanel();
+        filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.X_AXIS));
+
+        JLabel filterLabel = new JLabel("Filter by category: ");
+        String[] categories = {"All", "Clothes", "Phones"};
+        JComboBox<String> filterComboBox = new JComboBox<>(categories);
+        filterComboBox.addActionListener(e -> {
+            String selectedCategory = (String) filterComboBox.getSelectedItem();
+            List<Product> filteredProducts = new ArrayList<>();
+            if(selectedCategory.equals("All")){
+                filteredProducts = super.products;
+            }
+            else if(selectedCategory.equals("Clothes")){
+                for(Product product: super.products){
+                    if(product instanceof Cloth){
+                        filteredProducts.add(product);
+                    }
+                }
+            }
+            else if(selectedCategory.equals("Phones")){
+                for(Product product: super.products){
+                    if(product instanceof Phone){
+                        filteredProducts.add(product);
+                    }
+                }
+            }
+            super.root.removeAll();
+            super.root.add(showProducts(filteredProducts));
+            super.frame.revalidate();
+            super.frame.repaint();
+        });
+
+        filterPanel.add(filterLabel);
+        filterPanel.add(filterComboBox);
+        return filterPanel;
+    }
+
     //The following implementations give the access to see, rate and add products to the shopping card to users
     public JPanel createProductBox(Cloth cloth) {
         JPanel box = new JPanel();
