@@ -112,4 +112,9 @@ public abstract class Product {
     public String getName() {
         return this.title;
     }
+
+    public String getCategory() {
+        // Return classes which are extended from Product as the category of the products
+        return this.getClass().getSimpleName();
+    }
 }

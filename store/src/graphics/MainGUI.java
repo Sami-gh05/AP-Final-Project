@@ -1,6 +1,7 @@
 package graphics;
 import account.User;
 import product.Cloth;
+import product.Phone;
 import product.Product;
 import shop.Data;
 
@@ -24,6 +25,15 @@ public class MainGUI extends Data{
 
         users.add(user1);
         users.add(user2);
+
+        Product product1 = new Cloth("cloth1", 100, "100", "red", "M");
+        products.add(product1);
+        Product product2 = new Phone("phone1", 100, "100", "red", "M");
+        products.add(product2);
+        Product product3 = new Cloth("cloth2", 100, "100", "red", "M");
+        products.add(product3);
+        Product product4 = new Phone("phone2", 100, "100", "red", "M");
+        products.add(product4);
 
 
         //everything in the graphics start from here

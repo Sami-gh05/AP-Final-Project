@@ -10,7 +10,9 @@ import shop.Data;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class UserMainPanel extends ProductsPanel{
     private User user;
@@ -72,35 +74,44 @@ public class UserMainPanel extends ProductsPanel{
         filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.X_AXIS));
 
         JLabel filterLabel = new JLabel("Filter by category: ");
-        String[] categories = {"All", "Clothes", "Phones"};
-        JComboBox<String> filterComboBox = new JComboBox<>(categories);
+
+        // Create a Set to store unique categories
+        Set<String> categories = new HashSet<>();
+
+        // Add "All" to the set
+        categories.add("All");
+
+        // Iterate over the product list
+        for (Product product : super.products) {
+            // Add the category of each product to the set
+            categories.add(product.getCategory());
+        }
+
+
+        // Convert the set to an array
+        String[] categoriesArray = categories.toArray(new String[0]);
+
+        // Create a JComboBox with the categories array
+        JComboBox<String> filterComboBox = new JComboBox<>(categoriesArray);
         filterComboBox.addActionListener(e -> {
             String selectedCategory = (String) filterComboBox.getSelectedItem();
             List<Product> filteredProducts = new ArrayList<>();
             assert selectedCategory != null;
-            switch (selectedCategory) {
-                case "All":
-                    filteredProducts = super.products;
-                    break;
-                case "Clothes":
-                    for (Product product : super.products) {
-                        if (product instanceof Cloth) {
-                            filteredProducts.add(product);
-                        }
-                    }
-                    break;
-                case "Phones":
-                    for (Product product : super.products) {
-                        if (product instanceof Phone) {
-                            filteredProducts.add(product);
-                        }
-                    }
-                    break;
+            // Iterate over the product list
+            for (Product product : super.products) {
+                // If the product's category matches the selected category
+                if (product.getCategory().equals(selectedCategory)) {
+                    // Add the product to the filtered products list
+                    filteredProducts.add(product);
+                } else if (selectedCategory.equals("All")) {
+                    // If the selected category is "All", add all products to the filtered products list
+                    filteredProducts.add(product);
+                }
             }
-            super.root.removeAll();
-            super.root.add(showProducts(filteredProducts));
-            super.frame.revalidate();
-            super.frame.repaint();
+            productGrid.removeAll();
+            productGrid.add(showProducts(filteredProducts));
+            productGrid.revalidate();
+            productGrid.repaint();
         });
 
         filterPanel.add(filterLabel);
@@ -145,7 +156,7 @@ public class UserMainPanel extends ProductsPanel{
             buyAmountField.setText("");
         });
 
-        box.add(image);
+        //box.add(image);
         box.add(productName);
         box.add(productPrice);
         box.add(size);
@@ -198,7 +209,7 @@ public class UserMainPanel extends ProductsPanel{
             buyAmountField.setText("");
         });
 
-        box.add(image);
+        //box.add(image);
         box.add(productName);
         box.add(productPrice);
         box.add(companyName);
