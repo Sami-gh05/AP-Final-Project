@@ -24,9 +24,39 @@ public class UserMainPanel extends ProductsPanel{
             // TODO: Implement the logic to show the shopping card panel
         });
 
+        // Add category choice field to header with a listener to filter products (our categories are in the product package)
+        JComboBox<String> categoryChoice = getStringJComboBox();
+        header.add(categoryChoice);
+
+
+
         header.add(userPanelButton);
         header.add(shoppingCard);
         return header;
+    }
+
+    private JComboBox<String> getStringJComboBox() {
+        JComboBox<String> categoryChoice = new JComboBox<>(new String[]{"All", "Cloth", "Phone"});
+
+        categoryChoice.addActionListener(e -> {
+            String selectedCategory = (String) categoryChoice.getSelectedItem();
+            if (selectedCategory.equals("All")) {
+                super.root.removeAll();
+                super.root.add(createProductGrid(selectedCategory));
+            } else {
+                super.root.removeAll();
+                super.root.add(createProductGrid(selectedCategory));
+            }
+        });
+
+
+
+        return categoryChoice;
+    }
+
+    public static void main(String[] args) {
+        UserMainPanel userMainPanel = new UserMainPanel(new User("user", "password", "email", "address", "phone"));
+        userMainPanel.createHeader();
     }
 
 }
