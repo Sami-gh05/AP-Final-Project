@@ -12,13 +12,17 @@ import product.Product;
 import shop.Data;
 
 public class UserListPanel {
+    private JFrame frame;
+    private JPanel root;
     private JPanel mainPanel;
     private JPanel userPanel;
     private JPanel detailPanel;
     private CardLayout cardLayout;
     private List<User> users;
 
-    public UserListPanel() {
+    public UserListPanel(JFrame frame, JPanel root) {
+        this.frame = frame;
+        this.root = root;
         this.users = Data.getUsers();
         mainPanel = new JPanel();
         cardLayout = new CardLayout();
@@ -97,9 +101,8 @@ public class UserListPanel {
         exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(mainPanel);
                 frame.getContentPane().removeAll();
-                frame.add(new AdminMainPanel(Data.getProducts()).getRoot());
+                frame.add(root);
                 frame.revalidate();
                 frame.repaint();
             }

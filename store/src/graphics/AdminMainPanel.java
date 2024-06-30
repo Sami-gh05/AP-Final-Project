@@ -41,7 +41,7 @@ public class AdminMainPanel extends ProductsPanel {
         JButton userListButton = new JButton("Users List");
         userListButton.addActionListener(e -> {
             super.frame.getContentPane().removeAll();
-            super.frame.add(new UserListPanel().getMainPanel());
+            super.frame.add(new UserListPanel(super.frame, super.root).getMainPanel());
             super.frame.revalidate();
             super.frame.repaint();
         });
