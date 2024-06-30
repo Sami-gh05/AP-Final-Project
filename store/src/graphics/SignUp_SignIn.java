@@ -44,7 +44,7 @@ public class SignUp_SignIn extends JFrame {
         root.add(signIn, gbc);
 
         JButton admin = new JButton("Admin Login");
-        admin.addActionListener(e -> showUserLoginFields("Admin login"));
+        admin.addActionListener(e -> showAdminLoginFields("Admin login"));
         gbc.gridy = 3;
         root.add(admin, gbc);
 
@@ -177,7 +177,7 @@ public class SignUp_SignIn extends JFrame {
     }
 
     private void showAdminLoginFields(String buttonText) {
-        AdminAuthenticator adminAuthentication = new AdminAuthenticator();
+        AdminAuthenticator adminAuthentication = new AdminAuthenticator(); // Use AdminAuthenticator
 
         root.removeAll();
         GridBagConstraints gbc = new GridBagConstraints();
@@ -211,15 +211,13 @@ public class SignUp_SignIn extends JFrame {
 
         //for admin log in
         loginButton2.addActionListener(e -> {
-            try{
-                adminAuthentication.signIn(  usernameField.getText(),
-                        passwordField.getText());
-            }
-            catch (Exception exception){
+            try {
+                adminAuthentication.signIn(usernameField.getText(), new String(passwordField.getPassword())); // Use AdminAuthenticator's signIn method
+            } catch (Exception exception) {
                 adminAuthentication.setMessage("PLEASE FILL ALL THE GAPS CORRECTLY");
             }
             JOptionPane.showMessageDialog(this, adminAuthentication.getMessage());
-            if(adminAuthentication.getMessage().equals("LOGGED IN SUCCESSFULLY")){
+            if (adminAuthentication.getMessage().equals("LOGGED IN SUCCESSFULLY")) {
                 usernameField.setText("");
                 passwordField.setText("");
                 new AdminMainPanel(Data.getProducts());
@@ -321,4 +319,3 @@ public class SignUp_SignIn extends JFrame {
     public Component getPanel() {
         return root;
     }
-}
