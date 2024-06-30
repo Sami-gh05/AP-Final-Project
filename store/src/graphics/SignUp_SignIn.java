@@ -58,7 +58,8 @@ public class SignUp_SignIn extends JFrame {
         backButton.setFocusable(false);
 
 
-        backButton.addActionListener(e -> {showInitialFields();
+        backButton.addActionListener(e -> {
+            showInitialFields();
             usernameField.setText("");
             passwordField.setText("");
             nameField.setText("");
@@ -151,16 +152,15 @@ public class SignUp_SignIn extends JFrame {
 
         //for user log up
         loginButton1.addActionListener(e -> {
-            try{
+            try {
                 //it checks whether the user exists or not
-                userAuthentication.signIn(  usernameField.getText(),
+                userAuthentication.signIn(usernameField.getText(),
                         passwordField.getText());
-            }
-            catch (Exception exception){
+            } catch (Exception exception) {
                 userAuthentication.setMessage("PLEASE FILL ALL THE GAPS CORRECTLY");
             }
             JOptionPane.showMessageDialog(this, userAuthentication.getMessage());
-            if(userAuthentication.getMessage().equals("LOGGED IN SUCCESSFULLY")){
+            if (userAuthentication.getMessage().equals("LOGGED IN SUCCESSFULLY")) {
                 new UserMainPanel(userAuthentication.getUser(usernameField.getText()), Data.getProducts());
                 usernameField.setText("");
                 passwordField.setText("");
@@ -283,19 +283,18 @@ public class SignUp_SignIn extends JFrame {
 
         //for user sign up
         loginButton3.addActionListener(e -> {
-            try{
+            try {
                 //it checks whether the user is repetitive or not
-                authentication.signUp(  usernameField.getText(),
+                authentication.signUp(usernameField.getText(),
                         passwordField.getText(),
                         nameField.getText(),
                         phoneField.getText(),
                         addressField.getText());
-            }
-            catch (Exception exception){
+            } catch (Exception exception) {
                 authentication.setMessage("PLEASE FILL ALL THE GAPS CORRECTLY");
             }
             JOptionPane.showMessageDialog(this, authentication.getMessage());
-            if(authentication.getMessage().equals("SIGNED UP SUCCESSFULLY")){
+            if (authentication.getMessage().equals("SIGNED UP SUCCESSFULLY")) {
                 usernameField.setText("");
                 passwordField.setText("");
                 nameField.setText("");
@@ -315,7 +314,7 @@ public class SignUp_SignIn extends JFrame {
     }
 
 
-
     public Component getPanel() {
         return root;
     }
+}
