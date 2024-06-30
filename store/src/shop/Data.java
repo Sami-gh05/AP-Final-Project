@@ -42,4 +42,7 @@ public class Data {
     public static void removeProduct(Product product) {
         products.remove(product);
     }
+    public static void addUser(User user){
+        users.add(user);
+    }
 }

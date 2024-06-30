@@ -1,5 +1,6 @@
 package graphics;
 
+import account.User;
 import authentication.AdminAuthenticator;
 import authentication.UserAuthenticator;
 import shop.Data;
@@ -295,12 +296,15 @@ public class SignUp_SignIn extends JFrame {
             }
             JOptionPane.showMessageDialog(this, authentication.getMessage());
             if (authentication.getMessage().equals("SIGNED UP SUCCESSFULLY")) {
+                User user = new User(usernameField.getText(),passwordField.getText(),nameField.getText(),phoneField.getText(),addressField.getText());
+                Data.addUser(user);
                 usernameField.setText("");
                 passwordField.setText("");
                 nameField.setText("");
                 phoneField.setText("");
                 addressField.setText("");
-                new UserMainPanel(authentication.getUser(usernameField.getText()), Data.getProducts());
+
+                new UserMainPanel(user, Data.getProducts());
                 this.dispose();
             }
         });
