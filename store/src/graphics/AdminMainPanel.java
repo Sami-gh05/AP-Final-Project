@@ -49,9 +49,9 @@ public class AdminMainPanel extends ProductsPanel {
         logOutButton.addActionListener(e -> {
             AdminAuthenticator authenticator = new AdminAuthenticator();
             authenticator.logOut(Admin.getAdminID());
-            super.frame.dispose();
             Data.fillDatabase();
-            new SignUp_SignIn();
+            super.frame.dispose();
+            new MainGUI();
         });
         JButton refreshButton = new JButton("Refresh");
         refreshButton.addActionListener(e -> {

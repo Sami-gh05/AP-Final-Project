@@ -53,9 +53,9 @@ public class UserMainPanel extends ProductsPanel{
         logOutButton.addActionListener(e -> {
             UserAuthenticator authenticator = new UserAuthenticator();
             authenticator.logOut(user.getUserName());
-            super.frame.dispose();
             Data.fillDatabase();
-            new SignUp_SignIn();
+            super.frame.dispose();
+            new MainGUI();
         });
 
         // Add comboBox for filtering products
@@ -160,6 +160,9 @@ public class UserMainPanel extends ProductsPanel{
         JButton addToCartButton = new JButton("Add to Cart");
         addToCartButton.addActionListener(e -> {
             user.addTOShoppingCard(cloth, 1);
+            for(User user1 : Data.getUsers()){
+                if(user1.getUserName().equals(user.getUserName())) user1.addTOShoppingCard(cloth,1);
+            }
             JOptionPane.showMessageDialog(addToCartButton, "Added to your Shopping Cart");
         });
         buttonsPanel.add(addToCartButton);
@@ -222,6 +225,9 @@ public class UserMainPanel extends ProductsPanel{
         JButton addToCartButton = new JButton("Add to Cart");
         addToCartButton.addActionListener(e -> {
             user.addTOShoppingCard(phone, 1);
+            for(User user1 : Data.getUsers()){
+                if(user1.getUserName().equals(user.getUserName())) user1.addTOShoppingCard(phone,1);
+            }
             JOptionPane.showMessageDialog(addToCartButton, "Added to your Shopping Cart");
         });
         buttonsPanel.add(addToCartButton);
