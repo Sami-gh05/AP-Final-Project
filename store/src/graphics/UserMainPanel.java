@@ -120,111 +120,138 @@ public class UserMainPanel extends ProductsPanel{
     }
 
     //The following implementations give the access to see, rate and add products to the shopping card to users
+    @Override
     public JPanel createProductBox(Cloth cloth) {
-        JPanel box = new JPanel();
-        box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+        JPanel box = new JPanel(new BorderLayout());
 
-        JLabel productName = new JLabel(cloth.getTitle());
-        JLabel productPrice = new JLabel(String.valueOf(cloth.getPrice()));
-        //getting the rate as stars:
-        String stars = "";
-        for(int i = 0; i < cloth.getRate(); i++)
-            stars += "★";
-        JLabel productRating = new JLabel(stars);
-        JLabel image = cloth.getImageLabel();
-        JLabel category = new JLabel(cloth.getLabel());
-        JLabel size = new JLabel(cloth.getSize());
-        JLabel color = new JLabel(cloth.getColor());
-        JLabel sex = new JLabel(cloth.getSex());
-        JLabel productCode = new JLabel(cloth.getProductCode());
+        // Create ImageIcon from the cloth object
+        ImageIcon imageIcon = cloth.getImageIcon();
+        JLabel imageLabel = new JLabel();
+        if (imageIcon != null) {
+            imageLabel.setIcon(imageIcon);
+        } else {
+            imageLabel.setText("No Image Available");
+            imageLabel.setHorizontalAlignment(JLabel.CENTER);
+        }
+        imageLabel.setPreferredSize(new Dimension(200, 200)); // Set preferred size for the image
+        box.add(imageLabel, BorderLayout.NORTH);
 
-        JLabel buyAmountLabel = new JLabel("Enter the number you want");
-        JTextField buyAmountField = new JTextField();
-        JLabel rateLabel = new JLabel("Rate from 1 to 5");
-        JTextField rateField = new JTextField();
+        // Details panel with vertical layout
+        JPanel detailsPanel = new JPanel();
+        detailsPanel.setLayout(new BoxLayout(detailsPanel, BoxLayout.Y_AXIS));
+
+        detailsPanel.add(new JLabel(cloth.getTitle()));
+        detailsPanel.add(new JLabel(String.valueOf(cloth.getPrice())));
+        detailsPanel.add(new JLabel(cloth.getSize()));
+        detailsPanel.add(new JLabel(cloth.getColor()));
+        detailsPanel.add(new JLabel(cloth.getSex()));
+        detailsPanel.add(new JLabel(cloth.getProductCode()));
+        detailsPanel.add(new JLabel(cloth.getLabel()));
+
+        // Add other components as needed
+
+        box.add(detailsPanel, BorderLayout.CENTER);
+
+        // Buttons panel
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+
+        JButton addToCartButton = new JButton("Add to Cart");
+        addToCartButton.addActionListener(e -> {
+            // Implement add to cart functionality here
+            JOptionPane.showMessageDialog(addToCartButton, "Added to your Shopping Cart");
+        });
+        buttonsPanel.add(addToCartButton);
+
         JButton rateButton = new JButton("Rate");
         rateButton.addActionListener(e -> {
-            cloth.updateRate(Integer.parseInt(rateField.getText()));
+            // Implement rate functionality here
             JOptionPane.showMessageDialog(rateButton, "Rated successfully");
-            rateField.setText("");
         });
+        buttonsPanel.add(rateButton);
 
-        JButton addToCard = new JButton("Add");
-        addToCard.addActionListener(e -> {
-            user.addTOShoppingCard(cloth, Integer.parseInt(buyAmountField.getText()));
-            JOptionPane.showMessageDialog(addToCard, "Added to your ShoppingCard");
-            buyAmountField.setText("");
-        });
+        box.add(buttonsPanel, BorderLayout.SOUTH);
 
-        //box.add(image);
-        box.add(productName);
-        box.add(productPrice);
-        box.add(size);
-        box.add(color);
-        box.add(sex);
-        box.add(productCode);
-        box.add(category);
-        box.add(productRating);
-        box.add(rateLabel);
-        box.add(rateField);
-        box.add(rateButton);
-        box.add(buyAmountLabel);
-        box.add(buyAmountField);
-        box.add(addToCard);
         return box;
     }
+
+    @Override
     public JPanel createProductBox(Phone phone) {
-        JPanel box = new JPanel();
-        box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+        JPanel box = new JPanel(new BorderLayout());
 
-        JLabel productName = new JLabel(phone.getTitle());
-        JLabel productPrice = new JLabel(String.valueOf(phone.getPrice()));
-        //getting the rate as stars:
-        String stars = "";
-        for(int i = 0; i < phone.getRate(); i++)
-            stars += "★";
-        JLabel productRating = new JLabel(stars);
-        JLabel image = phone.getImageLabel();
-        JLabel category = new JLabel(phone.getLabel());
-        JLabel companyName = new JLabel(phone.getCompanyName());
-        JLabel color = new JLabel(phone.getColor());
-        JLabel model = new JLabel(phone.getModel());
-        JLabel productCode = new JLabel(phone.getProductCode());
+        // Create ImageIcon from the phone object
+        ImageIcon imageIcon = phone.getImageIcon();
+        JLabel imageLabel = new JLabel();
+        if (imageIcon != null) {
+            imageLabel.setIcon(imageIcon);
+        } else {
+            imageLabel.setText("No Image Available");
+            imageLabel.setHorizontalAlignment(JLabel.CENTER);
+        }
+        imageLabel.setPreferredSize(new Dimension(200, 200)); // Set preferred size for the image
+        box.add(imageLabel, BorderLayout.NORTH);
 
-        JLabel buyAmountLabel = new JLabel("Enter the number you want");
-        JTextField buyAmountField = new JTextField();
-        JLabel rateLabel = new JLabel("Rate from 1 to 5");
-        JTextField rateField = new JTextField();
+        // Details panel with vertical layout
+        JPanel detailsPanel = new JPanel();
+        detailsPanel.setLayout(new BoxLayout(detailsPanel, BoxLayout.Y_AXIS));
+
+        detailsPanel.add(new JLabel(phone.getTitle()));
+        detailsPanel.add(new JLabel(String.valueOf(phone.getPrice())));
+        detailsPanel.add(new JLabel(phone.getCompanyName()));
+        detailsPanel.add(new JLabel(phone.getColor()));
+        detailsPanel.add(new JLabel(phone.getModel()));
+        detailsPanel.add(new JLabel(phone.getProductCode()));
+        detailsPanel.add(new JLabel(phone.getLabel()));
+
+        // Add other components as needed
+
+        box.add(detailsPanel, BorderLayout.CENTER);
+
+        // Buttons panel
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+
+        JButton addToCartButton = new JButton("Add to Cart");
+        addToCartButton.addActionListener(e -> {
+            // Implement add to cart functionality here
+            JOptionPane.showMessageDialog(addToCartButton, "Added to your Shopping Cart");
+        });
+        buttonsPanel.add(addToCartButton);
+
         JButton rateButton = new JButton("Rate");
         rateButton.addActionListener(e -> {
-            phone.updateRate(Integer.parseInt(rateField.getText()));
+            // Implement rate functionality here
             JOptionPane.showMessageDialog(rateButton, "Rated successfully");
-            rateField.setText("");
         });
+        buttonsPanel.add(rateButton);
 
-        JButton addToCard = new JButton("Add");
-        addToCard.addActionListener(e -> {
-            user.addTOShoppingCard(phone, Integer.parseInt(buyAmountField.getText()));
-            JOptionPane.showMessageDialog(addToCard, "Added to your ShoppingCard");
-            buyAmountField.setText("");
-        });
+        box.add(buttonsPanel, BorderLayout.SOUTH);
 
-        //box.add(image);
-        box.add(productName);
-        box.add(productPrice);
-        box.add(companyName);
-        box.add(color);
-        box.add(model);
-        box.add(productCode);
-        box.add(category);
-        box.add(productRating);
-        box.add(rateLabel);
-        box.add(rateField);
-        box.add(rateButton);
-        box.add(buyAmountLabel);
-        box.add(buyAmountField);
-        box.add(addToCard);
         return box;
+    }
+    public JPanel showProducts() {
+        JPanel allProductsPanel = new JPanel();
+        allProductsPanel.setLayout(new GridLayout(0, 3, 10, 10)); // 3 columns
+
+        if (products != null) {
+            for (Product product : Data.getProducts()) {
+                if (product instanceof Cloth) {
+                    Cloth cloth = (Cloth) product;
+                    allProductsPanel.add(createProductBox(cloth));
+                } else if (product instanceof Phone) {
+                    Phone phone = (Phone) product;
+                    allProductsPanel.add(createProductBox(phone));
+                }
+            }
+        }
+
+        JScrollPane scrollPane = new JScrollPane(allProductsPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(scrollPane, BorderLayout.CENTER);
+        return panel;
     }
 
     public JPanel getMainPanel(){
