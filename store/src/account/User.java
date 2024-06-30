@@ -137,4 +137,12 @@ public class User {
     public String getMessage() {
         return message;
     }
+
+    public void buyProducts() {
+        //TODO
+    }
+
+    public void clearShoppingCard() {
+        shoppingCard.clear();
+    }
 }

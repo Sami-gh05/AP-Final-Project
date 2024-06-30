@@ -108,4 +108,8 @@ public abstract class Product {
 
         return imageInByte;
     }
+
+    public String getName() {
+        return this.title;
+    }
 }

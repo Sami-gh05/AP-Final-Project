@@ -8,6 +8,7 @@ import product.Product;
 import shop.Data;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,14 @@ public class UserMainPanel extends ProductsPanel{
         super(products);
         this.user = user;
     }
+
+    public UserMainPanel(User user) {
+
+        super(Data.getProducts());
+        this.user = user;
+
+    }
+
     @Override
     public JPanel createHeader(){
         JPanel header = new JPanel();
@@ -32,7 +41,10 @@ public class UserMainPanel extends ProductsPanel{
 
         JButton shoppingCard = new JButton("Shopping card");
         shoppingCard.addActionListener(e -> {
-            // TODO: Implement the logic to show the shopping card panel
+            super.frame.getContentPane().removeAll();
+            super.frame.add(new UserShoppingCardPanel(user).getMainPanel());
+            super.frame.revalidate();
+            super.frame.repaint();
         });
 
         JButton logOutButton = new JButton("Log out");
@@ -65,22 +77,25 @@ public class UserMainPanel extends ProductsPanel{
         filterComboBox.addActionListener(e -> {
             String selectedCategory = (String) filterComboBox.getSelectedItem();
             List<Product> filteredProducts = new ArrayList<>();
-            if(selectedCategory.equals("All")){
-                filteredProducts = super.products;
-            }
-            else if(selectedCategory.equals("Clothes")){
-                for(Product product: super.products){
-                    if(product instanceof Cloth){
-                        filteredProducts.add(product);
+            assert selectedCategory != null;
+            switch (selectedCategory) {
+                case "All":
+                    filteredProducts = super.products;
+                    break;
+                case "Clothes":
+                    for (Product product : super.products) {
+                        if (product instanceof Cloth) {
+                            filteredProducts.add(product);
+                        }
                     }
-                }
-            }
-            else if(selectedCategory.equals("Phones")){
-                for(Product product: super.products){
-                    if(product instanceof Phone){
-                        filteredProducts.add(product);
+                    break;
+                case "Phones":
+                    for (Product product : super.products) {
+                        if (product instanceof Phone) {
+                            filteredProducts.add(product);
+                        }
                     }
-                }
+                    break;
             }
             super.root.removeAll();
             super.root.add(showProducts(filteredProducts));
@@ -199,5 +214,13 @@ public class UserMainPanel extends ProductsPanel{
         box.add(buyAmountField);
         box.add(addToCard);
         return box;
+    }
+
+    public JPanel getMainPanel(){
+        root = new JPanel();
+        root.setLayout(new BoxLayout(root, BoxLayout.Y_AXIS));
+        root.add(createHeader());
+        root.add(showProducts(super.products));
+        return root;
     }
 }
