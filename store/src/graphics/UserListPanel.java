@@ -1,9 +1,5 @@
 package graphics;
 
-import account.User;
-import product.Product;
-import shop.Data;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -11,22 +7,23 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Map;
 
+import account.User;
+import product.Product;
+import shop.Data;
+
 public class UserListPanel {
     private JPanel mainPanel;
     private JPanel userPanel;
     private JPanel detailPanel;
-
     private CardLayout cardLayout;
     private List<User> users;
-    //private AdminMainPanel
+
     public UserListPanel() {
         this.users = Data.getUsers();
-        // Create the main panel with CardLayout
         mainPanel = new JPanel();
         cardLayout = new CardLayout();
         mainPanel.setLayout(cardLayout);
 
-        // Create the user panel and add it to the main panel
         userPanel = new JPanel();
         userPanel.setLayout(new GridBagLayout());
         JScrollPane scrollPane = new JScrollPane(userPanel);
@@ -34,18 +31,14 @@ public class UserListPanel {
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         mainPanel.add(scrollPane, "UserList");
 
-        // Create the detail panel and add it to the main panel
         detailPanel = new JPanel();
         detailPanel.setLayout(new BorderLayout());
         mainPanel.add(detailPanel, "DetailView");
 
-        // Add the main panel to the frame's content pane
-        //getContentPane().add(mainPanel);
-
-        // Load the user list
         loadUserList();
     }
-    public JPanel getMainPanel(){
+
+    public JPanel getMainPanel() {
         return mainPanel;
     }
 
@@ -95,6 +88,27 @@ public class UserListPanel {
             gbc.gridy++;
             userPanel.add(panel, gbc);
         }
+
+        // Add exit button to go back to AdminMainPanel
+        JButton exitButton = new JButton("Exit to Admin Panel");
+        exitButton.setFont(new Font("Arial", Font.PLAIN, 12));
+        exitButton.setBackground(Color.WHITE);
+        exitButton.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+        exitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(mainPanel);
+                frame.getContentPane().removeAll();
+                frame.add(new AdminMainPanel(Data.getProducts()).getRoot());
+                frame.revalidate();
+                frame.repaint();
+            }
+        });
+
+        // Add the exit button to the user panel
+        gbc.gridy++;
+        gbc.anchor = GridBagConstraints.CENTER;
+        userPanel.add(exitButton, gbc);
 
         userPanel.revalidate();
         userPanel.repaint();
@@ -155,15 +169,14 @@ public class UserListPanel {
         tabbedPane.add("Shopping Cart", shoppingCartPanel);
         tabbedPane.add("Previous Purchases", previousPurchasesPanel);
 
-        // Back button
-        JButton backButton = new JButton("Back");
+        JButton backButton = new JButton("Back to User List");
         backButton.setFont(new Font("Arial", Font.PLAIN, 12));
         backButton.setBackground(Color.WHITE);
         backButton.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cardLayout.show(mainPanel, "UserList");
+                cardLayout.show(mainPanel, "UserList"); // Show the user list panel
             }
         });
 
@@ -175,6 +188,5 @@ public class UserListPanel {
         detailPanel.revalidate();
         detailPanel.repaint();
     }
-
-
 }
+
