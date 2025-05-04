@@ -94,6 +94,10 @@ The application is structured into several packages, each handling different asp
 - **📦 product:** Represents product-related data and operations.
 - **🏪 shop:** Manages main operations of the online shop.
 
+
+
+    **Within the code, a validation procedure is implemented in which the validation of inputs will be checked.**
+
 ## 🤝 Contributing
 
 Contributions are welcome! If you have suggestions for improving this project, feel free to open an issue or create a pull request.
